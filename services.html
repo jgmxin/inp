@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other Services | Apex Flight Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0B1628;
+      --navy2: #112040;
+      --blue:  #1E6FA8;
+      --sky:   #4FA8D8;
+      --amber: #F5A623;
+      --white: #FFFFFF;
+      --steel: #8A9BB0;
+      --muted: #C4D0DE;
+      --card:  #152135;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; height: 64px;
+      background: rgba(11,22,40,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+      letter-spacing: 0.12em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--amber); }
+
+    /* HAMBURGER */
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:6px; z-index:200; }
+    .nav-hamburger span { display:block; width:24px; height:2px; background:var(--white); transition:transform 0.25s, opacity 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; bottom:0; background:rgba(11,22,40,0.98); backdrop-filter:blur(16px); z-index:99; flex-direction:column; padding:2rem 5vw; overflow-y:auto; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { text-decoration:none; color:var(--muted); font-size:1.3rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:1rem 0; border-bottom:1px solid rgba(138,155,176,0.1); transition:color 0.2s; }
+    .mobile-menu a:hover { color:var(--amber); }
+    .mobile-menu a.mobile-cta { margin-top:1.5rem; background:var(--amber); color:var(--navy); text-align:center; padding:1rem; border-bottom:none; font-weight:700; }
+    .nav-cta {
+      background: var(--amber); color: var(--navy);
+      border: none; padding: 0.5rem 1.4rem;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #ffc14d; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 130px 5vw 70px;
+      background: linear-gradient(135deg, #0B1628 0%, #0e2040 60%, #0B1628 100%);
+      position: relative; overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      opacity: 0.3;
+    }
+    .page-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      letter-spacing: 0.03em; line-height: 0.95;
+    }
+    .page-title em { color: var(--amber); font-style: normal; }
+    .page-sub {
+      margin-top: 1.2rem; font-size: 1rem;
+      color: var(--muted); max-width: 540px; line-height: 1.65; font-weight: 300;
+    }
+
+    /* ── SERVICE CARDS ── */
+    .services-section { padding: 70px 5vw; }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5px;
+      margin-top: 0;
+    }
+
+    .service-card {
+      background: var(--card);
+      padding: 2.4rem 2.2rem;
+      position: relative; overflow: hidden;
+      transition: background 0.2s;
+    }
+    .service-card:hover { background: #1a2d47; }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--amber);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    /* Featured card spans full width on some grid breakpoints */
+    .service-card-featured {
+      background: #0f1e35;
+      border: 1px solid rgba(245,166,35,0.2);
+    }
+    .service-card-featured::before { transform: scaleX(1); }
+
+    .service-icon {
+      width: 52px; height: 52px;
+      border: 1px solid rgba(245,166,35,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: var(--amber);
+      margin-bottom: 1.4rem;
+    }
+    .service-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.65rem; letter-spacing: 0.05em;
+      margin-bottom: 0.3rem; line-height: 1.05;
+    }
+    .service-subtitle {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--steel); margin-bottom: 1rem;
+    }
+    .service-desc {
+      font-size: 0.88rem; color: var(--muted); line-height: 1.65;
+      font-weight: 300; margin-bottom: 1.3rem;
+    }
+
+    .service-details { display: flex; flex-direction: column; gap: 0.55rem; }
+    .detail-row {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      font-size: 0.82rem; color: var(--muted);
+    }
+    .detail-row::before {
+      content: '→'; color: var(--amber); flex-shrink: 0; font-size: 0.75rem; margin-top: 1px;
+    }
+
+    /* Location badge */
+    .location-only-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.3);
+      padding: 0.45rem 0.9rem;
+      margin-top: 1.3rem;
+    }
+    .location-only-badge .badge-icon { color: var(--amber); font-size: 0.8rem; }
+    .location-only-badge span {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--amber);
+    }
+    .location-only-badge .badge-airports {
+      font-size: 0.72rem; font-weight: 600; color: var(--white);
+      letter-spacing: 0.08em;
+    }
+
+    .service-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.2rem;
+    }
+    .tag {
+      font-size: 0.63rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem;
+      background: rgba(30,111,168,0.15); color: var(--sky);
+      border: 1px solid rgba(79,168,216,0.2);
+    }
+    .program-price {
+      display: flex; flex-direction: column; gap: 0.2rem;
+    }
+    .price-from {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--steel);
+    }
+    .price-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: var(--amber); letter-spacing: 0.06em; line-height: 1;
+    }
+    .price-note {
+      font-size: 0.72rem; color: var(--steel);
+    }
+
+    /* ── IPC HIGHLIGHT SECTION ── */
+    .ipc-section {
+      padding: 0 5vw 70px;
+    }
+    .ipc-block {
+      background: var(--navy2);
+      border-left: 3px solid var(--sky);
+      padding: 2.5rem 2.5rem;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 3rem;
+      align-items: start;
+    }
+    .ipc-left .ipc-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--sky); margin-bottom: 0.5rem;
+    }
+    .ipc-left .ipc-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem; letter-spacing: 0.04em; line-height: 1;
+    }
+    .ipc-right p {
+      font-size: 0.88rem; color: var(--muted); line-height: 1.7;
+      font-weight: 300; margin-bottom: 1rem;
+    }
+    .ipc-checklist {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .ipc-check {
+      display: flex; gap: 0.55rem; align-items: flex-start;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .ipc-check::before { content: '✓'; color: var(--sky); flex-shrink: 0; }
+
+    /* ── RUNWAY DIVIDER ── */
+    .runway-divider {
+      height: 60px; background: var(--navy); position: relative; overflow: hidden;
+    }
+    .runway-divider::after {
+      content: '';
+      position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      transform: translateY(-50%); opacity: 0.3;
+    }
+
+    /* ── CTA ── */
+    .cta-strip {
+      background: var(--amber);
+      padding: 3rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .cta-strip .strip-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--navy); opacity: 0.6; margin-bottom: 0.3rem;
+    }
+    .cta-strip .strip-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      color: var(--navy); letter-spacing: 0.03em; line-height: 1.1;
+    }
+    .btn-dark {
+      background: var(--navy); color: var(--white);
+      padding: 0.9rem 2.2rem; font-weight: 700; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+      transition: background 0.2s; display: inline-block;
+    }
+    .btn-dark:hover { background: var(--navy2); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f1c;
+      padding: 2rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(138,155,176,0.08);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.12em; color: var(--steel);
+    }
+    .footer-logo span { color: var(--amber); }
+    footer p { font-size: 0.75rem; color: var(--steel); opacity: 0.6; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .ipc-block { grid-template-columns: 1fr; gap: 1.5rem; }
+      .ipc-checklist { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .cta-strip { flex-direction: column; }
+      .service-card[style*="grid-column"] > div { grid-template-columns: 1fr !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html"><span>APEX</span> FLIGHT</a>
+  <ul class="nav-links">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#pace">Pace Options</a></li>
+    <li><a href="fleet.html">Fleet</a></li>
+    <li><a href="services.html" class="active">Other Services</a></li>
+    <li><a href="timebuilding.html">Time Building</a></li>
+    <li><a href="oralprep.html">Oral Prep</a></li>
+    <li><a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Start Training</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#programs">Programs</a>
+  <a href="index.html#finishup">Finish-Up</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="services.html">Other Services</a>
+  <a href="timebuilding.html">Time Building</a>
+  <a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="index.html#contact" class="mobile-cta">Start Training</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Beyond the Certificate</div>
+  <h1 class="page-title">Other <em>Services</em></h1>
+  <p class="page-sub">
+    Endorsements, proficiency checks, logbook services, and specialized training to expand your privileges, stay current, and fly with more confidence.
+  </p>
+</div>
+
+<!-- ENDORSEMENTS GRID -->
+<section class="services-section">
+
+  <div class="services-grid">
+
+    <!-- Complex -->
+    <div class="service-card">
+      <div class="service-icon">⚙</div>
+      <div class="service-title">Complex Endorsement</div>
+      <div class="service-subtitle">Logbook Endorsement · FAR 61.31(e)</div>
+      <p class="service-desc">
+        Required to act as PIC of a complex aircraft — one with retractable gear, flaps, and a controllable-pitch propeller. Train in the Piper Arrow or equivalent complex single.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Ground instruction covering systems and operating procedures</div>
+        <div class="detail-row">Flight training in a qualified complex aircraft</div>
+        <div class="detail-row">Logbook endorsement upon demonstrated proficiency</div>
+        <div class="detail-row">No minimum hours required — completion based</div>
+      </div>
+    </div>
+
+    <!-- High Performance -->
+    <div class="service-card">
+      <div class="service-icon">↑</div>
+      <div class="service-title">High Performance Endorsement</div>
+      <div class="service-subtitle">Logbook Endorsement · FAR 61.31(f)</div>
+      <p class="service-desc">
+        Required to act as PIC of any aircraft with an engine over 200 horsepower. A logical next step after your complex endorsement for pilots building toward commercial privileges.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Ground training on high-performance engine operations</div>
+        <div class="detail-row">Flight training in a qualifying HP aircraft</div>
+        <div class="detail-row">Covers MP, prop management, and fuel injection</div>
+        <div class="detail-row">Logbook endorsement upon demonstrated proficiency</div>
+      </div>
+    </div>
+
+    <!-- Tailwheel -->
+    <div class="service-card">
+      <div class="service-icon">✦</div>
+      <div class="service-title">Tailwheel Endorsement</div>
+      <div class="service-subtitle">Logbook Endorsement · FAR 61.31(i)</div>
+      <p class="service-desc">
+        Flying a conventional-gear ("tailwheel") aircraft requires a separate endorsement. Tailwheel training sharpens your rudder discipline, crosswind technique, and ground handling skills in a way that benefits every type of flying.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Three-point and wheel landing techniques</div>
+        <div class="detail-row">Crosswind operations and wind correction</div>
+        <div class="detail-row">Ground loops — recognition and prevention</div>
+        <div class="detail-row">Solo sign-off upon demonstrated proficiency</div>
+      </div>
+    </div>
+
+    <!-- Spin -->
+    <div class="service-card service-card-featured">
+      <div class="service-icon">↻</div>
+      <div class="service-title">Spin Endorsement</div>
+      <div class="service-subtitle">CFI Prerequisite · FAR 61.183(i) · Limited Locations</div>
+      <p class="service-desc">
+        Required for CFI applicants. Spin training develops a deep understanding of aerodynamic stalls, incipient spin entry, developed spin characteristics, and recovery procedures.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Stall series, incipient and developed spin entry</div>
+        <div class="detail-row">One-turn, multi-turn, and cross-control spin recovery</div>
+        <div class="detail-row">Emergency spin recovery procedures</div>
+        <div class="detail-row">Required for CFI applicants under FAR 61.183</div>
+      </div>
+      <div class="location-only-badge">
+        <div class="badge-icon">◉</div>
+        <span>Available only at:</span>
+        <div class="badge-airports">KLAL (Lakeland) &amp; KTIX (Titusville)</div>
+      </div>
+    </div>
+
+    <!-- Flight Review -->
+    <div class="service-card">
+      <div class="service-icon">✓</div>
+      <div class="service-title">Flight Review (BFR)</div>
+      <div class="service-subtitle">Currency Requirement · FAR 61.56 · Every 24 Months</div>
+      <p class="service-desc">
+        Every certificated pilot must complete a flight review every 24 calendar months to exercise pilot-in-command privileges. Our CFIs conduct thorough, efficient reviews at all partner locations.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Minimum 1 hr ground + 1 hr flight (varies by pilot)</div>
+        <div class="detail-row">Covers applicable FARs and safe operating procedures</div>
+        <div class="detail-row">Logbook endorsement upon satisfactory completion</div>
+        <div class="detail-row">Available at all 8 partner locations</div>
+      </div>
+    </div>
+
+    <!-- Written Test Prep -->
+    <div class="service-card">
+      <div class="service-icon">✏</div>
+      <div class="service-title">Written Test Prep</div>
+      <div class="service-subtitle">Ground Instruction · All Certificates &amp; Ratings</div>
+      <p class="service-desc">
+        Structured ground school prep for the FAA written knowledge test — Private, Instrument, Commercial, CFI, or ATP. One-on-one or small group instruction focused on your weak areas.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Private, Instrument, Commercial, CFI, ATP, CFII</div>
+        <div class="detail-row">Practice test question review and explanation</div>
+        <div class="detail-row">Targeted study sessions by topic</div>
+        <div class="detail-row">Online or in-person options available</div>
+      </div>
+    </div>
+
+    <!-- Logbook Digitization -->
+    <div class="service-card">
+      <div class="service-icon">📋</div>
+      <div class="service-title">Logbook Digitization</div>
+      <div class="service-subtitle">Records Service · ForeFlight / Logbook Pro</div>
+      <p class="service-desc">
+        Convert your paper logbooks into a verified digital record. We carefully transcribe your flight history into ForeFlight or Logbook Pro — with totals verified and ready for airline or government applications.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Full transcription of paper logbook entries</div>
+        <div class="detail-row">Total time, category, class, and instrument hours verified</div>
+        <div class="detail-row">Export-ready for airline apps and FAA records</div>
+        <div class="detail-row">ForeFlight and Logbook Pro formats supported</div>
+      </div>
+      <div class="service-tags">
+        <span class="tag">ForeFlight</span>
+        <span class="tag">Logbook Pro</span>
+      </div>
+    </div>
+
+    <!-- Requirement Completion -->
+    <div class="service-card">
+      <div class="service-icon">◎</div>
+      <div class="service-title">Requirement Completion Flights</div>
+      <div class="service-subtitle">Cross-Countries · IFR Approaches · Night Hours</div>
+      <p class="service-desc">
+        Missing cross-country hours, night landings, instrument approaches, or other specific FAA requirements before your checkride? We'll build a focused plan and knock them out efficiently.
+      </p>
+      <div class="service-details">
+        <div class="detail-row">Long cross-country for IFR and CPL requirements</div>
+        <div class="detail-row">Night cross-country and landings</div>
+        <div class="detail-row">Instrument approach currency (6 in 6 months)</div>
+        <div class="detail-row">Solo hour completion for PPL applicants</div>
+      </div>
+      <div class="service-tags">
+        <span class="tag">IFR Requirements</span>
+        <span class="tag">CPL Requirements</span>
+        <span class="tag">PPL Requirements</span>
+      </div>
+    </div>
+
+    <!-- TAA & Dual Time -->
+    <div class="service-card service-card-featured" style="grid-column: 1 / -1;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;">
+        <div>
+          <div class="service-icon">🖥</div>
+          <div class="service-title">TAA &amp; Dual Time</div>
+          <div class="service-subtitle">Commercial Requirement · Glass Cockpit · 1–2 Days</div>
+          <p class="service-desc">
+            Knock out both your day and night cross-country requirements for the Commercial certificate in one focused 1–2 day block — while gaining real proficiency in a Technically Advanced Aircraft. You'll leave comfortable with a full glass cockpit and autopilot systems used in professional aviation.
+          </p>
+          <div class="program-price" style="margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid rgba(138,155,176,0.15);">
+            <span class="price-from">Starting at</span>
+            <span class="price-num">$3,000</span>
+            <span class="price-note">1–2 days · aircraft cost separate</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem;">What's Covered</div>
+          <div class="service-details" style="margin-bottom: 1.5rem;">
+            <div class="detail-row">Day cross-country — meets FAR 61.129 CPL requirement</div>
+            <div class="detail-row">Night cross-country — meets FAR 61.129 CPL requirement</div>
+            <div class="detail-row">Both XCs completed back-to-back in 1–2 days</div>
+            <div class="detail-row">Dual instruction logged toward commercial total time</div>
+            <div class="detail-row">Glass cockpit orientation — PFD, MFD, flight management</div>
+            <div class="detail-row">Autopilot systems — engagement, modes, and monitoring</div>
+            <div class="detail-row">Weather &amp; NOTAMs in a TAA environment</div>
+          </div>
+          <div style="background: rgba(245,166,35,0.07); border-left: 2px solid var(--amber); padding: 1rem 1.2rem;">
+            <div style="font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.4rem;">You'll Walk Away With</div>
+            <div style="font-size: 0.83rem; color: var(--muted); line-height: 1.6;">Both commercial XC requirements complete, dual time logged, and genuine glass cockpit &amp; autopilot proficiency — the same tools used every day in professional aviation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="runway-divider"></div>
+
+<!-- IPC SECTION -->
+<section class="ipc-section">
+  <div class="ipc-block">
+    <div class="ipc-left">
+      <div class="ipc-label">Instrument Currency</div>
+      <div class="ipc-title">Instrument<br>Proficiency<br>Check</div>
+    </div>
+    <div class="ipc-right">
+      <p>
+        If your instrument currency has lapsed — or you simply want to sharpen your IFR skills — the IPC gets you back on track with a thorough review of instrument procedures, approaches, and airspace operations conducted with one of our qualified CFIIs.
+      </p>
+      <p>
+        The IPC is not a checkride. It's a proficiency flight conducted to the Instrument ACS standards, covering the areas required by FAR 61.57(d). Upon successful completion, you're restored to full instrument currency.
+      </p>
+      <div class="ipc-checklist">
+        <div class="ipc-check">Pre-flight planning &amp; weather analysis</div>
+        <div class="ipc-check">Instrument takeoff and departure</div>
+        <div class="ipc-check">En-route IFR operations</div>
+        <div class="ipc-check">Holding patterns</div>
+        <div class="ipc-check">Precision approaches (ILS/LPV)</div>
+        <div class="ipc-check">Non-precision approaches</div>
+        <div class="ipc-check">Partial panel operations</div>
+        <div class="ipc-check">Missed approach &amp; alternate</div>
+        <div class="ipc-check">Circling approach</div>
+        <div class="ipc-check">Emergency procedures</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK REFERENCE TABLE -->
+<section style="padding: 0 5vw 70px; background: var(--navy2);">
+  <div style="padding-top: 60px;">
+    <div style="font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;">Quick Reference</div>
+    <h2 style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem, 4vw, 2.8rem); letter-spacing: 0.04em; margin-bottom: 2rem;">Services at a Glance</h2>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(245,166,35,0.4);">
+            <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--steel);">Service</th>
+            <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--steel);">FAR Reference</th>
+            <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--steel);">Deliverable</th>
+            <th style="text-align: left; padding: 0.75rem 1rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--steel);">Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Complex Endorsement</td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.31(e)</td>
+            <td style="padding: 1rem; color: var(--muted);">Logbook Endorsement</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">High Performance Endorsement</td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.31(f)</td>
+            <td style="padding: 1rem; color: var(--muted);">Logbook Endorsement</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Tailwheel Endorsement</td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.31(i)</td>
+            <td style="padding: 1rem; color: var(--muted);">Logbook Endorsement</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Spin Endorsement</td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.183(i)</td>
+            <td style="padding: 1rem; color: var(--muted);">Logbook Endorsement</td>
+            <td style="padding: 1rem;"><span style="color: var(--amber); font-weight: 700; font-size: 0.8rem;">KLAL &amp; KTIX only</span></td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Instrument Proficiency Check</td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.57(d)</td>
+            <td style="padding: 1rem; color: var(--muted);">Currency Restored</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Flight Review (BFR)</td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.56</td>
+            <td style="padding: 1rem; color: var(--muted);">Logbook Endorsement</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Written Test Prep</td>
+            <td style="padding: 1rem; color: var(--muted);">—</td>
+            <td style="padding: 1rem; color: var(--muted);">Ground Instruction</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Logbook Digitization</td>
+            <td style="padding: 1rem; color: var(--muted);">—</td>
+            <td style="padding: 1rem; color: var(--muted);">Digital Logbook</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr>
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">Requirement Completion Flights</td>
+            <td style="padding: 1rem; color: var(--muted);">Per certificate</td>
+            <td style="padding: 1rem; color: var(--muted);">Logged Flight Time</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations</td>
+          </tr>
+          <tr style="border-top: 1px solid rgba(138,155,176,0.12);">
+            <td style="padding: 1rem; font-weight: 600; color: var(--white);">TAA &amp; Dual Time <span style="color: var(--amber); font-size: 0.75rem; font-weight: 700; margin-left: 0.4rem;">$3,000</span></td>
+            <td style="padding: 1rem; color: var(--muted);">FAR 61.129</td>
+            <td style="padding: 1rem; color: var(--muted);">Both CPL XCs + Glass Proficiency</td>
+            <td style="padding: 1rem; color: var(--steel);">All locations · 1–2 days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <div>
+    <div class="strip-label">Add to Your Privileges</div>
+    <div class="strip-title">Ready to expand what<br>you're legal to fly?</div>
+  </div>
+  <a href="index.html#contact" class="btn-dark">Contact Us</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>APEX</span> FLIGHT TRAINING</div>
+  <p>© 2026 Apex Flight Training · Flagler County Airport, FL · info@apexflighttraining.com</p>
+  <p style="opacity:0.4; font-size:0.7rem;">All endorsements subject to demonstrated proficiency per applicable FARs.</p>
+</footer>
+
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>

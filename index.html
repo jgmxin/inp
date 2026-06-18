@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apex Flight Training | Florida's Premier Accelerated Program</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0B1628;
+      --navy2:  #112040;
+      --blue:   #1E6FA8;
+      --sky:    #4FA8D8;
+      --amber:  #F5A623;
+      --white:  #FFFFFF;
+      --steel:  #8A9BB0;
+      --muted:  #C4D0DE;
+      --card:   #152135;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      height: 64px;
+      background: rgba(11,22,40,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.12em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--amber); }
+
+    /* ── HAMBURGER ── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column; gap: 5px; cursor: pointer;
+      background: none; border: none; padding: 6px; z-index: 200;
+    }
+    .nav-hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); transition: transform 0.25s, opacity 0.25s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── MOBILE MENU OVERLAY ── */
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+      background: rgba(11,22,40,0.98);
+      backdrop-filter: blur(16px);
+      z-index: 99;
+      flex-direction: column;
+      padding: 2rem 5vw;
+      overflow-y: auto;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      text-decoration: none; color: var(--muted);
+      font-size: 1.3rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 1rem 0;
+      border-bottom: 1px solid rgba(138,155,176,0.1);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--amber); }
+    .mobile-menu a.mobile-cta {
+      margin-top: 1.5rem; background: var(--amber); color: var(--navy);
+      text-align: center; padding: 1rem; border-bottom: none; font-weight: 700;
+    }
+    .nav-cta {
+      background: var(--amber); color: var(--navy);
+      border: none; padding: 0.5rem 1.4rem;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #ffc14d; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 5vw 80px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0B1628 0%, #0e2040 55%, #0B1628 100%);
+    }
+
+    /* Sky line horizon glow */
+    .hero::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 260px;
+      background: linear-gradient(to top, rgba(30,111,168,0.18) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Runway stripe signature element */
+    .runway-stripe {
+      position: absolute; right: -60px; top: 0; bottom: 0;
+      width: 520px;
+      background: linear-gradient(160deg, transparent 35%, rgba(245,166,35,0.06) 35%, rgba(245,166,35,0.06) 37%, transparent 37%),
+                  linear-gradient(160deg, transparent 45%, rgba(245,166,35,0.04) 45%, rgba(245,166,35,0.04) 47%, transparent 47%),
+                  radial-gradient(ellipse at 80% 50%, rgba(30,111,168,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Horizon line */
+    .horizon-line {
+      position: absolute; left: 0; right: 0;
+      bottom: 160px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(79,168,216,0.3) 20%, rgba(245,166,35,0.5) 50%, rgba(79,168,216,0.3) 80%, transparent 100%);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber);
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      max-width: 780px;
+    }
+    .hero-headline em { color: var(--amber); font-style: normal; }
+
+    .hero-sub {
+      margin-top: 1.8rem;
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 520px; line-height: 1.65; font-weight: 300;
+    }
+
+    .hero-stats {
+      display: flex; gap: 3rem; margin-top: 3rem; flex-wrap: wrap;
+    }
+    .stat-item { display: flex; flex-direction: column; gap: 0.2rem; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem; color: var(--amber); letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--steel);
+    }
+
+    .hero-actions { display: flex; gap: 1rem; margin-top: 2.8rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--amber); color: var(--navy);
+      padding: 0.85rem 2rem; font-weight: 700; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: #ffc14d; transform: translateY(-1px); }
+    .btn-ghost {
+      border: 1px solid var(--steel); color: var(--muted);
+      padding: 0.85rem 2rem; font-weight: 500; font-size: 0.88rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none; transition: border-color 0.2s, color 0.2s;
+      display: inline-block;
+    }
+    .btn-ghost:hover { border-color: var(--sky); color: var(--sky); }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--navy2);
+      border-top: 1px solid rgba(245,166,35,0.2);
+      border-bottom: 1px solid rgba(245,166,35,0.2);
+      padding: 1.2rem 5vw;
+      display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .trust-item .dot {
+      width: 6px; height: 6px; background: var(--amber); border-radius: 50%; flex-shrink: 0;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 90px 5vw; }
+    .section-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      letter-spacing: 0.04em; line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+    .section-body {
+      font-size: 1rem; color: var(--muted); max-width: 560px;
+      line-height: 1.7; font-weight: 300;
+    }
+
+    /* ── PROGRAMS ── */
+    .programs-section { background: var(--navy2); }
+    .programs-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      flex-wrap: wrap; gap: 1.5rem; margin-bottom: 3rem;
+    }
+    .program-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5px;
+    }
+    .program-card {
+      background: var(--card);
+      padding: 2.2rem 2rem;
+      position: relative; overflow: hidden;
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .program-card:hover { background: #1a2d47; }
+    .program-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--amber);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .program-card:hover::before { transform: scaleX(1); }
+    .program-badge {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 0.25rem 0.6rem;
+      border: 1px solid; margin-bottom: 1.2rem;
+    }
+    .badge-accelerated { border-color: var(--amber); color: var(--amber); }
+    .badge-flex { border-color: var(--sky); color: var(--sky); }
+    .badge-finish { border-color: #7dd4a8; color: #7dd4a8; }
+    .program-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.65rem; letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .program-duration {
+      font-size: 0.78rem; color: var(--steel); font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .program-desc {
+      font-size: 0.88rem; color: var(--muted); line-height: 1.6; font-weight: 300;
+      margin-bottom: 1.4rem;
+    }
+    .program-features { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .program-features li {
+      font-size: 0.8rem; color: var(--steel); display: flex; align-items: center; gap: 0.55rem;
+    }
+    .program-features li::before {
+      content: '→'; color: var(--amber); font-size: 0.75rem; flex-shrink: 0;
+    }
+    .program-price {
+      margin-top: 1.4rem; padding-top: 1.2rem;
+      border-top: 1px solid rgba(138,155,176,0.15);
+      display: flex; flex-direction: column; gap: 0.2rem;
+    }
+    .price-from {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--steel);
+    }
+    .price-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: var(--amber); letter-spacing: 0.06em; line-height: 1;
+    }
+    .price-note {
+      font-size: 0.72rem; color: var(--steel); font-weight: 400;
+    }
+    .program-price-note {
+      margin-top: 1.4rem; padding-top: 1.2rem;
+      border-top: 1px solid rgba(138,155,176,0.15);
+      font-size: 0.78rem; color: var(--steel); font-style: italic;
+    }
+
+    /* ── RUNWAY DIVIDER ── */
+    .runway-divider {
+      height: 80px;
+      background: var(--navy);
+      position: relative; overflow: hidden;
+    }
+    .runway-divider::after {
+      content: '';
+      position: absolute; left: 0; right: 0;
+      top: 50%; height: 2px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      transform: translateY(-50%);
+      opacity: 0.35;
+    }
+
+    /* ── WHY APEX ── */
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .why-items { display: flex; flex-direction: column; gap: 2rem; margin-top: 2rem; }
+    .why-item { display: flex; gap: 1.2rem; }
+    .why-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      border: 1px solid rgba(245,166,35,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; color: var(--amber);
+    }
+    .why-item-title {
+      font-weight: 700; font-size: 0.95rem; margin-bottom: 0.3rem;
+    }
+    .why-item-body { font-size: 0.85rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+    .why-callout {
+      background: var(--card);
+      border-left: 3px solid var(--amber);
+      padding: 2.5rem;
+    }
+    .callout-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 1rem;
+    }
+    .callout-quote {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      line-height: 1.15; letter-spacing: 0.03em;
+      color: var(--white); margin-bottom: 1.2rem;
+    }
+    .callout-sub { font-size: 0.88rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+    .callout-pricing {
+      margin-top: 1.8rem; padding-top: 1.8rem;
+      border-top: 1px solid rgba(138,155,176,0.2);
+    }
+    .pricing-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--steel); margin-bottom: 0.6rem;
+    }
+    .pricing-model {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; color: var(--amber); letter-spacing: 0.05em;
+    }
+    .pricing-note { font-size: 0.78rem; color: var(--steel); margin-top: 0.3rem; }
+
+    /* ── LOCATIONS ── */
+    .locations-section { background: var(--navy2); }
+    .locations-intro {
+      display: grid; grid-template-columns: 1fr 2fr; gap: 3rem;
+      align-items: start; margin-bottom: 3rem;
+    }
+    .florida-map-wrap {
+      position: relative;
+      aspect-ratio: 0.65;
+      max-width: 280px;
+    }
+
+    /* SVG Florida map */
+    .fl-map { width: 100%; height: 100%; }
+
+    .locations-list {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .location-card {
+      background: var(--card); padding: 1.4rem 1.5rem;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .location-card:hover { border-color: var(--amber); background: #1a2d47; }
+    .location-name {
+      font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;
+    }
+    .location-state {
+      font-size: 0.72rem; color: var(--steel); letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .location-pin {
+      font-size: 0.75rem; color: var(--amber); margin-bottom: 0.5rem;
+    }
+
+    /* ── CHECKRIDE STRIP ── */
+    .checkride-strip {
+      background: var(--amber);
+      padding: 3rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .strip-content .strip-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--navy); opacity: 0.6;
+      margin-bottom: 0.4rem;
+    }
+    .strip-content .strip-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      color: var(--navy); letter-spacing: 0.03em; line-height: 1.1;
+    }
+    .strip-content .strip-body {
+      font-size: 0.9rem; color: var(--navy); opacity: 0.75;
+      margin-top: 0.5rem; max-width: 440px; font-weight: 400;
+    }
+    .btn-dark {
+      background: var(--navy); color: var(--white);
+      padding: 0.9rem 2.2rem; font-weight: 700; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+      transition: background 0.2s; display: inline-block;
+    }
+    .btn-dark:hover { background: var(--navy2); }
+
+    /* ── PACE SECTION ── */
+    .pace-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px;
+      margin-top: 2.5rem;
+    }
+    .pace-card {
+      background: var(--card); padding: 2.5rem 2.2rem;
+    }
+    .pace-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+    }
+    .pace-subtitle { font-size: 0.8rem; color: var(--steel); margin-bottom: 1.2rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+    .pace-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+    .pace-highlight {
+      margin-top: 1.5rem; padding: 1rem 1.2rem;
+      background: rgba(245,166,35,0.07);
+      border-left: 2px solid var(--amber);
+      font-size: 0.82rem; color: var(--muted); font-style: italic;
+    }
+
+    /* ── CONTACT ── */
+    .contact-section {
+      background: var(--navy);
+      border-top: 1px solid rgba(138,155,176,0.1);
+    }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--steel);
+    }
+    .form-input, .form-select, .form-textarea {
+      background: var(--card);
+      border: 1px solid rgba(138,155,176,0.2);
+      color: var(--white); padding: 0.75rem 1rem;
+      font-family: 'Inter', sans-serif; font-size: 0.9rem;
+      outline: none; width: 100%;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--amber);
+    }
+    .form-select option { background: var(--card); }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+    .info-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .info-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border: 1px solid rgba(245,166,35,0.3);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--amber); font-size: 0.9rem;
+    }
+    .info-label { font-size: 0.7rem; color: var(--steel); letter-spacing: 0.1em; text-transform: uppercase; }
+    .info-value { font-size: 0.9rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f1c;
+      padding: 2rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(138,155,176,0.08);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.12em; color: var(--steel);
+    }
+    .footer-logo span { color: var(--amber); }
+    footer p {
+      font-size: 0.75rem; color: var(--steel); opacity: 0.6;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .why-grid, .contact-grid, .pace-grid { grid-template-columns: 1fr; }
+      .locations-intro { grid-template-columns: 1fr; }
+      .florida-map-wrap { max-width: 200px; }
+      .form-row { grid-template-columns: 1fr; }
+      .checkride-strip { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>APEX</span> FLIGHT</a>
+  <ul class="nav-links">
+    <li><a href="#programs">Programs</a></li>
+    <li><a href="#finishup">Finish-Up</a></li>
+    <li><a href="#pace">Pace Options</a></li>
+    <li><a href="fleet.html">Fleet</a></li>
+    <li><a href="services.html">Other Services</a></li>
+    <li><a href="timebuilding.html">Time Building</a></li>
+    <li><a href="oralprep.html">Oral Prep</a></li>
+    <li><a href="#locations">Locations</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Start Training</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#programs" onclick="closeMenu()">Programs</a>
+  <a href="#finishup" onclick="closeMenu()">Finish-Up</a>
+  <a href="#pace" onclick="closeMenu()">Pace Options</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="services.html">Other Services</a>
+  <a href="timebuilding.html">Time Building</a>
+  <a href="oralprep.html">Oral Prep</a>
+  <a href="#locations" onclick="closeMenu()">Locations</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+  <a href="#contact" class="mobile-cta" onclick="closeMenu()">Start Training</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="runway-stripe"></div>
+  <div class="horizon-line"></div>
+
+  <div class="hero-eyebrow">Florida's Accelerated Flight Training Program</div>
+  <h1 class="hero-headline">
+    From PPL to<br>
+    <em>Multi</em><br>
+    Engine Rated
+  </h1>
+  <p class="hero-sub">
+    Train at your pace — or ours. Instrument, Commercial, and Multi-Engine Add-On 
+    programs designed to get you rated in days, not months.
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num">10</span>
+      <span class="stat-label">Days to IFR*</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">10</span>
+      <span class="stat-label">Days Commercial</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">10</span>
+      <span class="stat-label">Days Multi Add-On</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">8</span>
+      <span class="stat-label">Partner Locations</span>
+    </div>
+  </div>
+
+  <div class="hero-actions">
+    <a href="#programs" class="btn-primary">View Programs</a>
+    <a href="#contact" class="btn-ghost">Get a Free Consultation</a>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="dot"></div> Pay As You Go</div>
+  <div class="trust-item"><div class="dot"></div> Onsite DPE Available</div>
+  <div class="trust-item"><div class="dot"></div> Checkride Scheduled Before You Arrive</div>
+  <div class="trust-item"><div class="dot"></div> FAA Certified Instructors</div>
+  <div class="trust-item"><div class="dot"></div> PPL Through Multi-Engine</div>
+</div>
+
+<!-- PROGRAMS -->
+<section class="programs-section" id="programs">
+  <div class="programs-header">
+    <div>
+      <div class="section-eyebrow">What We Offer</div>
+      <h2 class="section-title">Flight Training Programs</h2>
+    </div>
+    <p class="section-body">Every program is available accelerated or at your own pace. All training conducted through our network of partner flying clubs across Florida and South Carolina.</p>
+  </div>
+
+  <div class="program-grid">
+
+    <div class="program-card">
+      <div class="program-badge badge-flex">All Levels</div>
+      <div class="program-title">Private Pilot License</div>
+      <div class="program-duration">Your Timeline</div>
+      <p class="program-desc">Start here. Build the foundational skills and aeronautical knowledge required for your Private Pilot Certificate. Flexible scheduling around your life.</p>
+      <ul class="program-features">
+        <li>Ground school + flight training</li>
+        <li>Structured or self-paced schedule</li>
+        <li>Written test prep included</li>
+        <li>Pay per flight hour</li>
+      </ul>
+      <div class="program-price-note">Contact us for a personalized quote</div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-accelerated">Accelerated</div>
+      <div class="program-title">Instrument Rating</div>
+      <div class="program-duration">10 – 15 Days</div>
+      <p class="program-desc">Immersive, full-time IFR training. Arrive with your PPL and leave with your instrument ticket. Checkride scheduled before your first day of training.</p>
+      <ul class="program-features">
+        <li>18 hrs flight + ground instruction</li>
+        <li>Onsite DPE for checkride</li>
+        <li>Checkride date pre-confirmed</li>
+        <li>Sim time + actual IMC where available</li>
+      </ul>
+      <div class="program-price">
+        <span class="price-from">Starting at</span>
+        <span class="price-num">$6,000</span>
+        <span class="price-note">18 hrs flight + ground · aircraft cost separate</span>
+      </div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-accelerated">Accelerated</div>
+      <div class="program-title">Commercial Single Engine</div>
+      <div class="program-duration">10 Days</div>
+      <p class="program-desc">Designed for instrument-rated pilots ready to turn pro. Ten focused days of commercial maneuvers, cross-countries, and checkride preparation.</p>
+      <ul class="program-features">
+        <li>12 hrs flight + ground instruction</li>
+        <li>Onsite DPE for checkride</li>
+        <li>Commercial maneuver polish</li>
+        <li>FAR/AIM oral prep included</li>
+      </ul>
+      <div class="program-price">
+        <span class="price-from">Starting at</span>
+        <span class="price-num">$4,000</span>
+        <span class="price-note">12 hrs flight + ground · aircraft cost separate</span>
+      </div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-accelerated">Accelerated</div>
+      <div class="program-title">Multi-Engine Add-On</div>
+      <div class="program-duration">10 Days</div>
+      <p class="program-desc">Add the multi-engine rating to your certificate. Learn the systems, procedures, and emergency handling of twin-engine aircraft in an efficient ten-day course.</p>
+      <ul class="program-features">
+        <li>10 hrs flight + ground instruction</li>
+        <li>Engine-out procedures & V-speeds</li>
+        <li>Onsite DPE available</li>
+        <li>Available at select partner clubs</li>
+      </ul>
+      <div class="program-price">
+        <span class="price-from">Starting at</span>
+        <span class="price-num">$6,000</span>
+        <span class="price-note">10 hrs flight + ground · twin aircraft cost separate</span>
+      </div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-accelerated">Accelerated</div>
+      <div class="program-title">CFI Initial</div>
+      <div class="program-duration">~10 Days</div>
+      <p class="program-desc">Become a Certified Flight Instructor. Our CFI program covers the fundamentals of instruction, lesson planning, and the required flight and ground competencies for the FOI and FIA.</p>
+      <ul class="program-features">
+        <li>10 hrs flight + 10 hrs ground instruction</li>
+        <li>FOI & FIA written test prep</li>
+        <li>Teaching techniques & lesson plans</li>
+        <li>Checkride prep with experienced CFII</li>
+      </ul>
+      <div class="program-price">
+        <span class="price-from">Starting at</span>
+        <span class="price-num">$5,000</span>
+        <span class="price-note">10 hrs flight + 10 hrs ground · aircraft cost separate</span>
+      </div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-accelerated">Accelerated</div>
+      <div class="program-title">CFII — Instrument Instructor</div>
+      <div class="program-duration">~10 Days</div>
+      <p class="program-desc">Add the instrument instructor rating to your CFI certificate. Train to teach IFR operations, approaches, holds, and partial panel — and expand the pilots you're authorized to instruct.</p>
+      <ul class="program-features">
+        <li>Flight & ground instruction hours</li>
+        <li>IFR teaching methodology</li>
+        <li>IGI written test prep</li>
+        <li>Builds on your existing instrument experience</li>
+      </ul>
+      <div class="program-price-note">Contact us for CFII program pricing</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FINISH-UP PROGRAMS -->
+<section style="background: var(--navy); padding: 80px 5vw;" id="finishup">
+  <div class="programs-header">
+    <div>
+      <div class="section-eyebrow">Stuck? Let's Finish It.</div>
+      <h2 class="section-title">Finish-Up Programs</h2>
+    </div>
+    <p class="section-body">Already started your training somewhere else but stalled out? We'll assess exactly where your gaps are, build a focused plan, and get you to the checkride as fast as possible — no wasted time, no starting over.</p>
+  </div>
+
+  <!-- How it works strip -->
+  <div style="display:flex; gap:0; margin-bottom:2.5rem; flex-wrap:wrap;">
+    <div style="flex:1; min-width:200px; background:var(--card); padding:1.2rem 1.5rem; border-right:1px solid rgba(138,155,176,0.1);">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--amber); letter-spacing:0.1em; margin-bottom:0.3rem;">01 — Consult</div>
+      <div style="font-size:0.78rem; color:var(--muted); line-height:1.5;">Free session with your instructor to review your logbook, identify gaps, and map a completion plan.</div>
+    </div>
+    <div style="flex:1; min-width:200px; background:var(--card); padding:1.2rem 1.5rem; border-right:1px solid rgba(138,155,176,0.1);">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--amber); letter-spacing:0.1em; margin-bottom:0.3rem;">02 — Custom Plan</div>
+      <div style="font-size:0.78rem; color:var(--muted); line-height:1.5;">We build a training schedule around only what you need — no repeating what you already know.</div>
+    </div>
+    <div style="flex:1; min-width:200px; background:var(--card); padding:1.2rem 1.5rem; border-right:1px solid rgba(138,155,176,0.1);">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--amber); letter-spacing:0.1em; margin-bottom:0.3rem;">03 — Train</div>
+      <div style="font-size:0.78rem; color:var(--muted); line-height:1.5;">Accelerated, focused daily training. We move at the pace your gaps require — not a day slower.</div>
+    </div>
+    <div style="flex:1; min-width:200px; background:var(--card); padding:1.2rem 1.5rem;">
+      <div style="font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--amber); letter-spacing:0.1em; margin-bottom:0.3rem;">04 — Checkride</div>
+      <div style="font-size:0.78rem; color:var(--muted); line-height:1.5;">Onsite DPE scheduled as soon as you're ready. No waiting weeks for an available examiner.</div>
+    </div>
+  </div>
+
+  <div class="program-grid">
+
+    <div class="program-card">
+      <div class="program-badge badge-flex">Finish-Up</div>
+      <div class="program-title">PPL Finish-Up</div>
+      <div class="program-duration">As Fast As Possible</div>
+      <p class="program-desc">You've put in the hours but something stalled your training — schedule conflicts, instructor changes, or life getting in the way. We pick up exactly where you are and get you across the finish line.</p>
+      <ul class="program-features">
+        <li>Free logbook review & gap assessment</li>
+        <li>Only train what you actually need</li>
+        <li>Checkride scheduled when you're ready</li>
+        <li>Oral exam prep included</li>
+      </ul>
+      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-finish">Finish-Up</div>
+      <div class="program-title">IFR Finish-Up</div>
+      <div class="program-duration">As Fast As Possible</div>
+      <p class="program-desc">Stuck on approaches, holds, or just need the remaining instrument hours? We'll review your logbook, identify the specific gaps, and run an accelerated immersion to get you checkride-ready fast.</p>
+      <ul class="program-features">
+        <li>Free CFII logbook review & gap audit</li>
+        <li>Precision & non-precision approach polish</li>
+        <li>Sim + aircraft time to close remaining hours</li>
+        <li>Onsite DPE for checkride</li>
+      </ul>
+      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-finish">Finish-Up</div>
+      <div class="program-title">Commercial Finish-Up</div>
+      <div class="program-duration">As Fast As Possible</div>
+      <p class="program-desc">Need to polish commercial maneuvers, complete cross-country requirements, or just haven't been able to commit to finishing? We'll assess where you stand and build the shortest path to your CPL checkride.</p>
+      <ul class="program-features">
+        <li>Free logbook review & XC requirement audit</li>
+        <li>Commercial maneuver refinement</li>
+        <li>TAA time & XC completion available</li>
+        <li>Onsite DPE for checkride</li>
+      </ul>
+      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
+    </div>
+
+    <div class="program-card">
+      <div class="program-badge badge-finish">Finish-Up</div>
+      <div class="program-title">Multi-Engine Finish-Up</div>
+      <div class="program-duration">As Fast As Possible</div>
+      <p class="program-desc">Partially completed your multi-engine add-on or need more time on engine-out procedures before you feel checkride-ready? Come in, we'll assess the gaps and close them out efficiently.</p>
+      <ul class="program-features">
+        <li>Free assessment flight with CFIME</li>
+        <li>Engine-out & Vmc demonstration polish</li>
+        <li>Systems oral prep included</li>
+        <li>Onsite DPE at select locations</li>
+      </ul>
+      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
+    </div>
+
+  </div>
+
+  <!-- CTA note -->
+  <div style="margin-top:2rem; background:var(--card); border-left:3px solid var(--amber); padding:1.2rem 1.6rem; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap;">
+    <div>
+      <div style="font-size:0.7rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:0.3rem;">No Obligation</div>
+      <div style="font-size:0.95rem; font-weight:600; color:var(--white);">Not sure how many hours you need? Just reach out — the instructor consultation is free.</div>
+    </div>
+    <a href="#contact" class="btn-primary" style="white-space:nowrap;">Book Free Consult</a>
+  </div>
+</section>
+
+<!-- RUNWAY DIVIDER -->
+<div class="runway-divider"></div>
+
+<!-- PACE OPTIONS -->
+<section id="pace">
+  <div class="section-eyebrow">How You Train</div>
+  <h2 class="section-title">Your Pace. Your Schedule.</h2>
+  <p class="section-body">Not everyone can take two weeks off work. That's fine — we built both options from the ground up.</p>
+
+  <div class="pace-grid">
+    <div class="pace-card">
+      <div class="pace-title">⚡ Accelerated Track</div>
+      <div class="pace-subtitle">Full-time · Intensive · Fastest path to rated</div>
+      <p class="pace-desc">
+        This is aviation boot camp — in the best way. You fly every day, study every evening, and build the kind of mental muscle memory that comes only from total immersion. Your checkride date is locked in before you even arrive, so there's a hard target on the horizon.
+      </p>
+      <div class="pace-highlight">
+        Best for pilots who want to complete a rating in the shortest possible time. Come ready to work.
+      </div>
+    </div>
+
+    <div class="pace-card">
+      <div class="pace-title">🗓 Flexible Track</div>
+      <div class="pace-subtitle">Part-time · Self-paced · Fits your life</div>
+      <p class="pace-desc">
+        Train on weekends, evenings, or a few days a week. You set the tempo and we keep your training consistent and progressive. No pressure to rush — just steady, quality progress toward your certificate.
+      </p>
+      <div class="pace-highlight">
+        Best for working professionals, students, or anyone who wants to train without putting life on hold.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY APEX -->
+<section style="background: var(--navy2);">
+  <div class="why-grid">
+    <div>
+      <div class="section-eyebrow">Why Train With Us</div>
+      <h2 class="section-title">Quality Instruction.<br>No Surprises.</h2>
+      <div class="why-items">
+        <div class="why-item">
+          <div class="why-icon">✓</div>
+          <div>
+            <div class="why-item-title">Onsite Designated Pilot Examiner</div>
+            <div class="why-item-body">For accelerated programs, your DPE is already arranged before training begins. No waiting lists, no scheduling scramble after you're ready.</div>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">$</div>
+          <div>
+            <div class="why-item-title">Pay As You Go</div>
+            <div class="why-item-body">No large upfront deposits or enrollment fees. You pay for what you fly. Transparent, per-hour billing through your partner flying club.</div>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">✈</div>
+          <div>
+            <div class="why-item-title">Partner Flying Club Fleet</div>
+            <div class="why-item-body">Access well-maintained aircraft across 8 locations in Florida and South Carolina. Train near home or at the location that suits your schedule.</div>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">★</div>
+          <div>
+            <div class="why-item-title">Experienced CFIs Only</div>
+            <div class="why-item-body">Every instructor is a seasoned professional — not a student building time to the airlines. Quality instruction means fewer hours wasted and higher checkride pass rates.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="why-callout">
+      <div class="callout-label">Our Model</div>
+      <div class="callout-quote">Checkride scheduled before your first flight lesson.</div>
+      <div class="callout-sub">
+        For accelerated programs, we don't start training until the checkride date is confirmed with an onsite DPE. You train toward a real deadline — and that changes everything about how fast you learn.
+      </div>
+      <div class="callout-pricing">
+        <div class="pricing-label">Billing Structure</div>
+        <div class="pricing-model">Pay As You Go</div>
+        <div class="pricing-note">No enrollment fees. No large deposits. Pay per flight hour through your club. No surprises.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKRIDE STRIP -->
+<div class="checkride-strip">
+  <div class="strip-content">
+    <div class="strip-label">Accelerated Programs</div>
+    <div class="strip-title">Your checkride date is set<br>before day one.</div>
+    <p class="strip-body">For every accelerated program, we coordinate with an onsite Designated Pilot Examiner and lock in your checkride before training begins. You show up with a target, not a question mark.</p>
+  </div>
+  <a href="#contact" class="btn-dark">Book Your Slot</a>
+</div>
+
+<!-- LOCATIONS -->
+<section class="locations-section" id="locations">
+  <div class="section-eyebrow">Partner Flying Clubs</div>
+  <h2 class="section-title">Train Across Florida &amp; Beyond</h2>
+  <p class="section-body" style="margin-bottom: 2.5rem;">Eight partner flying clubs across the Southeast give you flexibility to train close to home or at the airport that makes sense for your program.</p>
+
+  <div class="locations-list">
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Flagler</div>
+      <div class="location-state">KFIN · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Daytona Beach</div>
+      <div class="location-state">KDAB · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Titusville</div>
+      <div class="location-state">KTIX · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Orlando</div>
+      <div class="location-state">KORL · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Sanford</div>
+      <div class="location-state">KSFB · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Lakeland</div>
+      <div class="location-state">KLAL · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">North Perry</div>
+      <div class="location-state">KHWO · Florida</div>
+    </div>
+
+    <div class="location-card">
+      <div class="location-pin">◉</div>
+      <div class="location-name">Charleston</div>
+      <div class="location-state">KCHS · South Carolina</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- RUNWAY DIVIDER -->
+<div class="runway-divider"></div>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-grid">
+    <div>
+      <div class="section-eyebrow">Get Started</div>
+      <h2 class="section-title">Ready to Train?<br>Let's Talk.</h2>
+      <p class="section-body">Tell us where you are in your training and which program interests you. We'll match you with the right location and schedule a free consultation.</p>
+
+      <div class="contact-info">
+        <div class="info-item">
+          <div class="info-icon">✉</div>
+          <div>
+            <div class="info-label">Email</div>
+            <div class="info-value">info@apexflighttraining.com</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">☎</div>
+          <div>
+            <div class="info-label">Phone</div>
+            <div class="info-value">(386) 555-0100</div>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon">◉</div>
+          <div>
+            <div class="info-label">Base Location</div>
+            <div class="info-value">Flagler County Airport, FL · Plus 7 Partner Locations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" placeholder="Jane" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" placeholder="Smith" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" placeholder="jane@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input class="form-input" type="tel" placeholder="(555) 000-0000" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Program of Interest</label>
+          <select class="form-select">
+            <option value="">Select a program...</option>
+            <option>Private Pilot License</option>
+            <option>Instrument Rating (Accelerated – 10–15 days)</option>
+            <option>Commercial Single Engine (Accelerated – 10 days)</option>
+            <option>Multi-Engine Add-On (Accelerated – 10 days)</option>
+            <option>Flexible / Part-Time Training</option>
+            <option>Not sure yet – need advice</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Certificates / Hours</label>
+          <input class="form-input" type="text" placeholder="e.g. PPL, 80 hours TT" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Location</label>
+          <select class="form-select">
+            <option value="">Any / No Preference</option>
+            <option>Flagler</option>
+            <option>Daytona Beach</option>
+            <option>Titusville</option>
+            <option>Orlando</option>
+            <option>Sanford</option>
+            <option>Lakeland</option>
+            <option>North Perry</option>
+            <option>Charleston, SC</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Anything else we should know?</label>
+          <textarea class="form-textarea" placeholder="Target dates, schedule constraints, questions..."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%; text-align:center; border:none; cursor:pointer; font-size:0.9rem;">
+          Send Inquiry
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>APEX</span> FLIGHT TRAINING</div>
+  <p>© 2026 Apex Flight Training · Flagler County Airport, FL · info@apexflighttraining.com</p>
+  <p style="opacity:0.4; font-size:0.7rem;">*Accelerated IFR subject to weather and student readiness. All programs FAA-regulated.</p>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+
+</body>
+</html>

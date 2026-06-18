@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleet | Apex Flight Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0B1628;
+      --navy2: #112040;
+      --blue:  #1E6FA8;
+      --sky:   #4FA8D8;
+      --amber: #F5A623;
+      --white: #FFFFFF;
+      --steel: #8A9BB0;
+      --muted: #C4D0DE;
+      --card:  #152135;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; height: 64px;
+      background: rgba(11,22,40,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+      letter-spacing: 0.12em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--amber); }
+
+    /* HAMBURGER */
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:6px; z-index:200; }
+    .nav-hamburger span { display:block; width:24px; height:2px; background:var(--white); transition:transform 0.25s, opacity 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; bottom:0; background:rgba(11,22,40,0.98); backdrop-filter:blur(16px); z-index:99; flex-direction:column; padding:2rem 5vw; overflow-y:auto; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { text-decoration:none; color:var(--muted); font-size:1.3rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:1rem 0; border-bottom:1px solid rgba(138,155,176,0.1); transition:color 0.2s; }
+    .mobile-menu a:hover { color:var(--amber); }
+    .mobile-menu a.mobile-cta { margin-top:1.5rem; background:var(--amber); color:var(--navy); text-align:center; padding:1rem; border-bottom:none; font-weight:700; }
+    .nav-cta {
+      background: var(--amber); color: var(--navy);
+      border: none; padding: 0.5rem 1.4rem;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #ffc14d; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 130px 5vw 70px;
+      background: linear-gradient(135deg, #0B1628 0%, #0e2040 60%, #0B1628 100%);
+      position: relative; overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0;
+      height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      opacity: 0.3;
+    }
+    .page-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      letter-spacing: 0.03em; line-height: 0.95;
+    }
+    .page-title em { color: var(--amber); font-style: normal; }
+    .page-sub {
+      margin-top: 1.2rem; font-size: 1rem;
+      color: var(--muted); max-width: 540px;
+      line-height: 1.65; font-weight: 300;
+    }
+
+    /* ── FLEET SECTIONS ── */
+    .fleet-section { padding: 70px 5vw; }
+    .fleet-section:nth-child(even) { background: var(--navy2); }
+
+    .fleet-category-header {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .fleet-category-line {
+      flex: 1; height: 1px;
+      background: linear-gradient(90deg, rgba(245,166,35,0.4) 0%, transparent 100%);
+    }
+    .fleet-category-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; letter-spacing: 0.08em; color: var(--white);
+    }
+    .fleet-category-badge {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; padding: 0.3rem 0.7rem;
+      border: 1px solid var(--amber); color: var(--amber);
+      align-self: center;
+    }
+
+    .fleet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5px;
+    }
+
+    .aircraft-card {
+      background: var(--card);
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .aircraft-card:hover { background: #1a2d47; }
+
+    /* Silhouette area */
+    .aircraft-visual {
+      background: #0d1c30;
+      height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .aircraft-visual::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center bottom, rgba(30,111,168,0.15) 0%, transparent 65%);
+    }
+    .aircraft-silhouette {
+      font-size: 4.5rem;
+      opacity: 0.5;
+      filter: grayscale(1) brightness(1.2);
+      transform: scaleX(-1);
+      position: relative; z-index: 1;
+    }
+    .aircraft-model-tag {
+      position: absolute; bottom: 12px; right: 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.85rem; letter-spacing: 0.15em;
+      color: var(--amber); opacity: 0.6;
+    }
+
+    .aircraft-info { padding: 1.6rem 1.8rem 2rem; }
+
+    .aircraft-make {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--steel); margin-bottom: 0.3rem;
+    }
+    .aircraft-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; letter-spacing: 0.05em;
+      line-height: 1; margin-bottom: 0.6rem;
+    }
+    .aircraft-desc {
+      font-size: 0.83rem; color: var(--muted); line-height: 1.6;
+      font-weight: 300; margin-bottom: 1.2rem;
+    }
+
+    .aircraft-specs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+    .spec-item {}
+    .spec-label {
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--steel); margin-bottom: 0.15rem;
+    }
+    .spec-value {
+      font-size: 0.82rem; color: var(--muted); font-weight: 500;
+    }
+
+    .aircraft-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.2rem;
+    }
+    .tag {
+      font-size: 0.63rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem;
+      background: rgba(30,111,168,0.15); color: var(--sky);
+      border: 1px solid rgba(79,168,216,0.2);
+    }
+    .tag-amber {
+      background: rgba(245,166,35,0.1); color: var(--amber);
+      border-color: rgba(245,166,35,0.25);
+    }
+
+    /* Twin accent stripe */
+    .twin-card .aircraft-visual {
+      background: #0c1a2e;
+    }
+    .twin-card .aircraft-visual::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--amber), #ffc14d);
+    }
+
+    /* ── NOTE BANNER ── */
+    .fleet-note {
+      margin: 0 5vw 60px;
+      background: var(--card);
+      border-left: 3px solid var(--sky);
+      padding: 1.2rem 1.6rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .fleet-note-icon { color: var(--sky); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+    .fleet-note-text { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+    .fleet-note-text strong { color: var(--white); }
+
+    /* ── RUNWAY DIVIDER ── */
+    .runway-divider {
+      height: 60px; background: var(--navy); position: relative; overflow: hidden;
+    }
+    .runway-divider::after {
+      content: '';
+      position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      transform: translateY(-50%); opacity: 0.3;
+    }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background: var(--amber);
+      padding: 3rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .cta-strip .strip-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--navy); opacity: 0.6; margin-bottom: 0.3rem;
+    }
+    .cta-strip .strip-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      color: var(--navy); letter-spacing: 0.03em;
+    }
+    .btn-dark {
+      background: var(--navy); color: var(--white);
+      padding: 0.9rem 2.2rem; font-weight: 700; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+      transition: background 0.2s; display: inline-block;
+    }
+    .btn-dark:hover { background: var(--navy2); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f1c;
+      padding: 2rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(138,155,176,0.08);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.12em; color: var(--steel);
+    }
+    .footer-logo span { color: var(--amber); }
+    footer p { font-size: 0.75rem; color: var(--steel); opacity: 0.6; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .fleet-grid { grid-template-columns: 1fr; }
+      .cta-strip { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html"><span>APEX</span> FLIGHT</a>
+  <ul class="nav-links">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#pace">Pace Options</a></li>
+    <li><a href="fleet.html" class="active">Fleet</a></li>
+    <li><a href="services.html">Other Services</a></li>
+    <li><a href="timebuilding.html">Time Building</a></li>
+    <li><a href="oralprep.html">Oral Prep</a></li>
+    <li><a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Start Training</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#programs">Programs</a>
+  <a href="index.html#finishup">Finish-Up</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="services.html">Other Services</a>
+  <a href="timebuilding.html">Time Building</a>
+  <a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="index.html#contact" class="mobile-cta">Start Training</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-eyebrow">Partner Club Aircraft</div>
+  <h1 class="page-title">Our <em>Fleet</em></h1>
+  <p class="page-sub">
+    Train in well-maintained, modern aircraft across our partner flying clubs. 
+    From primary trainers to turbocharged twins — the right airframe for every stage of your training.
+  </p>
+</div>
+
+<!-- FLEET NOTE -->
+<div class="fleet-note" style="margin-top: 3rem;">
+  <div class="fleet-note-icon">ℹ</div>
+  <div class="fleet-note-text">
+    <strong>Aircraft availability varies by partner location.</strong> 
+    Specific aircraft are assigned based on your training location and program. 
+    Your instructor will confirm the aircraft before your first flight. 
+    All aircraft are maintained to FAA Part 91 standards by partner club maintenance teams.
+  </div>
+</div>
+
+<!-- ── SINGLE ENGINE ── -->
+<section class="fleet-section">
+  <div class="fleet-category-header">
+    <div class="fleet-category-label">Single Engine</div>
+    <div class="fleet-category-badge">SE</div>
+    <div class="fleet-category-line"></div>
+  </div>
+
+  <div class="fleet-grid">
+
+    <!-- C172 -->
+    <div class="aircraft-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">C172</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Cessna</div>
+        <div class="aircraft-name">172 Skyhawk</div>
+        <p class="aircraft-desc">
+          The world's most-flown trainer. High-wing stability, forgiving handling, and a well-understood airframe make the 172 the go-to aircraft for PPL and IFR training alike.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engine</div>
+            <div class="spec-value">Lycoming IO-360 · 180 HP</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~122 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~640 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">4</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag">PPL Training</span>
+          <span class="tag">IFR Training</span>
+          <span class="tag">G1000 / Steam</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- C152 -->
+    <div class="aircraft-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">C152</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Cessna</div>
+        <div class="aircraft-name">152</div>
+        <p class="aircraft-desc">
+          A proven two-seat trainer celebrated for its light controls and economy. Ideal for the early stages of PPL training where building fundamentals is the entire mission.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engine</div>
+            <div class="spec-value">Lycoming O-235 · 110 HP</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~107 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~415 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">2</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag">PPL Training</span>
+          <span class="tag">Primary Trainer</span>
+          <span class="tag">Low Operating Cost</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PA-28 -->
+    <div class="aircraft-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">PA-28</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Piper</div>
+        <div class="aircraft-name">PA-28 Cherokee / Arrow</div>
+        <p class="aircraft-desc">
+          Piper's low-wing workhorse family. Depending on variant, the PA-28 is used for PPL, instrument, and — with the Arrow's retractable gear — complex endorsement training.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engine</div>
+            <div class="spec-value">Lycoming O-360 · 160–200 HP</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~117–135 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~500–600 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">4</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag">PPL Training</span>
+          <span class="tag">IFR Training</span>
+          <span class="tag tag-amber">Complex Capable</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DA40 -->
+    <div class="aircraft-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">DA40</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Diamond</div>
+        <div class="aircraft-name">DA40 Diamond Star</div>
+        <p class="aircraft-desc">
+          A modern composite trainer with best-in-class visibility, Garmin G1000 avionics, and fuel efficiency that reduces your hourly cost. A natural step toward the DA42 twin.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engine</div>
+            <div class="spec-value">Lycoming IO-360 · 180 HP</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~148 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~720 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">4</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag">PPL Training</span>
+          <span class="tag">IFR Training</span>
+          <span class="tag">G1000 Glass</span>
+          <span class="tag tag-amber">Composite Airframe</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="runway-divider"></div>
+
+<!-- ── MULTI-ENGINE ── -->
+<section class="fleet-section">
+  <div class="fleet-category-header">
+    <div class="fleet-category-label">Multi-Engine Twins</div>
+    <div class="fleet-category-badge" style="border-color: var(--sky); color: var(--sky);">ME</div>
+    <div class="fleet-category-line"></div>
+  </div>
+
+  <div class="fleet-grid">
+
+    <!-- Seminole Turbo -->
+    <div class="aircraft-card twin-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">PA-44T</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Piper</div>
+        <div class="aircraft-name">Seminole Turbo</div>
+        <p class="aircraft-desc">
+          The turbocharged Seminole is the industry-standard multi-engine trainer. Counter-rotating props eliminate critical engine concerns, letting you focus on systems and procedures from day one.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engines</div>
+            <div class="spec-value">2× Lycoming O-360 · 180 HP ea.</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~168 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~850 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">4</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag tag-amber">Multi Add-On</span>
+          <span class="tag tag-amber">Turbocharged</span>
+          <span class="tag">Counter-Rotating Props</span>
+          <span class="tag">IFR Equipped</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DA42 -->
+    <div class="aircraft-card twin-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">DA42</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Diamond</div>
+        <div class="aircraft-name">DA42 Twin Star</div>
+        <p class="aircraft-desc">
+          A sleek, diesel-powered composite twin with Garmin G1000 NXi and outstanding fuel efficiency. The DA42 bridges the gap between light trainer and professional-grade twin with exceptional range and modern avionics.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engines</div>
+            <div class="spec-value">2× Austro AE300 · 170 HP ea.</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~178 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~1,000 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">4</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag tag-amber">Multi Add-On</span>
+          <span class="tag tag-amber">Diesel Engines</span>
+          <span class="tag">G1000 NXi</span>
+          <span class="tag">Composite Airframe</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tecnam P2006T -->
+    <div class="aircraft-card twin-card">
+      <div class="aircraft-visual">
+        <div class="aircraft-silhouette">✈</div>
+        <div class="aircraft-model-tag">P2006T</div>
+      </div>
+      <div class="aircraft-info">
+        <div class="aircraft-make">Tecnam</div>
+        <div class="aircraft-name">P2006T</div>
+        <p class="aircraft-desc">
+          An Italian-designed light twin known for its economy and approachable handling. The P2006T is an excellent introduction to multi-engine operations with lower fuel burn and reduced operating costs.
+        </p>
+        <div class="aircraft-specs">
+          <div class="spec-item">
+            <div class="spec-label">Engines</div>
+            <div class="spec-value">2× Rotax 912S3 · 100 HP ea.</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Cruise Speed</div>
+            <div class="spec-value">~155 ktas</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Range</div>
+            <div class="spec-value">~780 nm</div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-label">Seats</div>
+            <div class="spec-value">4</div>
+          </div>
+        </div>
+        <div class="aircraft-tags">
+          <span class="tag tag-amber">Multi Add-On</span>
+          <span class="tag">Low Operating Cost</span>
+          <span class="tag">Rotax Engines</span>
+          <span class="tag">Modern Composite</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <div>
+    <div class="strip-label">Ready to Fly?</div>
+    <div class="strip-title">Talk to us about which aircraft fits your program.</div>
+  </div>
+  <a href="index.html#contact" class="btn-dark">Start Your Training</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>APEX</span> FLIGHT TRAINING</div>
+  <p>© 2026 Apex Flight Training · Flagler County Airport, FL · info@apexflighttraining.com</p>
+  <p style="opacity:0.4; font-size:0.7rem;">Aircraft availability varies by location and is subject to change.</p>
+</footer>
+
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>

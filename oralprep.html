@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkride Oral Prep | Apex Flight Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0B1628;
+      --navy2: #112040;
+      --blue:  #1E6FA8;
+      --sky:   #4FA8D8;
+      --amber: #F5A623;
+      --white: #FFFFFF;
+      --steel: #8A9BB0;
+      --muted: #C4D0DE;
+      --card:  #152135;
+      --green: #7dd4a8;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; height: 64px;
+      background: rgba(11,22,40,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+      letter-spacing: 0.12em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--amber); }
+    .nav-cta {
+      background: var(--amber); color: var(--navy);
+      border: none; padding: 0.5rem 1.4rem;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #ffc14d; }
+
+    /* HAMBURGER */
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:6px; z-index:200; }
+    .nav-hamburger span { display:block; width:24px; height:2px; background:var(--white); transition:transform 0.25s, opacity 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; bottom:0; background:rgba(11,22,40,0.98); backdrop-filter:blur(16px); z-index:99; flex-direction:column; padding:2rem 5vw; overflow-y:auto; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { text-decoration:none; color:var(--muted); font-size:1.3rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:1rem 0; border-bottom:1px solid rgba(138,155,176,0.1); transition:color 0.2s; }
+    .mobile-menu a:hover { color:var(--amber); }
+    .mobile-menu a.mobile-cta { margin-top:1.5rem; background:var(--amber); color:var(--navy); text-align:center; padding:1rem; border-bottom:none; font-weight:700; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 130px 5vw 70px;
+      background: linear-gradient(135deg, #0B1628 0%, #0e2040 60%, #0B1628 100%);
+      position: relative; overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      opacity: 0.3;
+    }
+    /* decorative background text */
+    .header-bg-text {
+      position: absolute; right: 4vw; bottom: -10px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 14vw, 11rem);
+      color: rgba(245,166,35,0.04);
+      letter-spacing: 0.02em;
+      pointer-events: none; user-select: none; line-height: 1;
+    }
+    .page-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      letter-spacing: 0.03em; line-height: 0.95; position: relative; z-index: 1;
+    }
+    .page-title em { color: var(--amber); font-style: normal; }
+    .page-sub {
+      margin-top: 1.2rem; font-size: 1rem;
+      color: var(--muted); max-width: 560px; line-height: 1.65; font-weight: 300;
+      position: relative; z-index: 1;
+    }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--navy2);
+      border-bottom: 1px solid rgba(245,166,35,0.12);
+      padding: 1.2rem 5vw;
+      display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .trust-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .trust-item .dot { width: 6px; height: 6px; background: var(--amber); border-radius: 50%; flex-shrink: 0; }
+
+    /* ── SECTIONS ── */
+    section { padding: 70px 5vw; }
+    .section-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.04em; margin-bottom: 1rem; line-height: 1.05;
+    }
+    .section-body {
+      font-size: 0.95rem; color: var(--muted); max-width: 600px; line-height: 1.7; font-weight: 300;
+    }
+
+    /* ── FEATURES ── */
+    .features-section { background: var(--navy2); }
+    .features-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5px; margin-top: 2.5rem;
+    }
+    .feature-card {
+      background: var(--card); padding: 2rem 1.8rem;
+      position: relative; overflow: hidden; transition: background 0.2s;
+    }
+    .feature-card:hover { background: #1a2d47; }
+    .feature-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--amber); transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+    }
+    .feature-card:hover::before { transform: scaleX(1); }
+    .feature-icon {
+      width: 48px; height: 48px;
+      border: 1px solid rgba(245,166,35,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: var(--amber); margin-bottom: 1.2rem;
+    }
+    .feature-title { font-weight: 700; font-size: 0.97rem; margin-bottom: 0.5rem; }
+    .feature-body { font-size: 0.83rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+    .feature-tag {
+      display: inline-block; margin-top: 0.9rem;
+      font-size: 0.63rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem;
+      background: rgba(245,166,35,0.1); color: var(--amber);
+      border: 1px solid rgba(245,166,35,0.25);
+    }
+
+    /* ── PRICING ── */
+    .pricing-section { background: var(--navy); }
+    .pricing-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2.5rem; align-items: start;
+    }
+
+    /* Standard orals */
+    .pricing-group-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--steel);
+      margin-bottom: 1rem; padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(138,155,176,0.15);
+    }
+    .pricing-cards { display: flex; flex-direction: column; gap: 1.5px; }
+    .pricing-card {
+      background: var(--card); padding: 1.4rem 1.8rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; transition: background 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .pricing-card:hover { background: #1a2d47; }
+    .pricing-card::after {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--amber);
+      transform: scaleY(0); transform-origin: bottom; transition: transform 0.25s;
+    }
+    .pricing-card:hover::after { transform: scaleY(1); }
+    .pc-left {}
+    .pc-cert {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem; letter-spacing: 0.06em; line-height: 1; margin-bottom: 0.2rem;
+    }
+    .pc-detail { font-size: 0.75rem; color: var(--steel); }
+    .pc-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: var(--amber); letter-spacing: 0.04em; white-space: nowrap;
+    }
+
+    /* CFI card — featured */
+    .pricing-cfi-box {
+      background: var(--card);
+      border: 1px solid rgba(245,166,35,0.25);
+      padding: 2rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .pricing-cfi-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--amber), #ffc14d);
+    }
+    .cfi-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem;
+    }
+    .cfi-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; letter-spacing: 0.05em; margin-bottom: 0.3rem;
+    }
+    .cfi-subtitle { font-size: 0.78rem; color: var(--steel); margin-bottom: 1.2rem; }
+    .cfi-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.65; font-weight: 300; margin-bottom: 1.5rem; }
+    .cfi-price-row {
+      display: flex; align-items: flex-end; gap: 0.6rem;
+      padding-top: 1.2rem; border-top: 1px solid rgba(138,155,176,0.15);
+      margin-bottom: 1.2rem;
+    }
+    .cfi-from { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel); margin-bottom: 0.2rem; }
+    .cfi-price-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.6rem; color: var(--amber); letter-spacing: 0.05em; line-height: 1;
+    }
+    .cfi-price-note { font-size: 0.75rem; color: var(--steel); margin-bottom: 0.2rem; }
+    .cfi-includes { display: flex; flex-direction: column; gap: 0.5rem; }
+    .cfi-include-item {
+      display: flex; gap: 0.55rem; align-items: flex-start;
+      font-size: 0.8rem; color: var(--muted);
+    }
+    .cfi-include-item::before { content: '→'; color: var(--amber); flex-shrink: 0; font-size: 0.75rem; margin-top: 1px; }
+
+    /* ── WHAT TO EXPECT ── */
+    .expect-grid {
+      display: grid; grid-template-columns: 1fr 2fr; gap: 4rem;
+      align-items: start; margin-top: 2rem;
+    }
+    .expect-callout {
+      background: var(--card); border-left: 3px solid var(--amber);
+      padding: 2rem;
+    }
+    .expect-callout-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem;
+    }
+    .expect-callout-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem; color: var(--white); letter-spacing: 0.02em; line-height: 1;
+    }
+    .expect-callout-unit { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+    .expect-callout-divider {
+      height: 1px; background: rgba(138,155,176,0.15); margin: 1.2rem 0;
+    }
+    .expect-callout-platform {
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .platform-icon {
+      width: 36px; height: 36px; background: rgba(79,168,216,0.12);
+      border: 1px solid rgba(79,168,216,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .platform-label { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+    .platform-label strong { color: var(--white); display: block; }
+
+    .expect-items { display: flex; flex-direction: column; gap: 1.5rem; }
+    .expect-item { display: flex; gap: 1.2rem; }
+    .expect-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; color: rgba(245,166,35,0.3); letter-spacing: 0.05em;
+      flex-shrink: 0; width: 32px; line-height: 1.2;
+    }
+    .expect-item-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.3rem; }
+    .expect-item-body { font-size: 0.82rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+    /* ── TOPICS ACCORDION ── */
+    .topics-section { background: var(--navy2); }
+    .topics-intro { margin-bottom: 2rem; }
+
+    .accordion { display: flex; flex-direction: column; gap: 1.5px; }
+    .accordion-item { background: var(--card); }
+    .accordion-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.3rem 1.8rem; cursor: pointer;
+      user-select: none; transition: background 0.2s;
+    }
+    .accordion-header:hover { background: #1a2d47; }
+    .accordion-header.open { background: #1a2d47; border-bottom: 1px solid rgba(138,155,176,0.1); }
+    .accordion-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: 0.06em;
+    }
+    .accordion-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem;
+      border: 1px solid var(--steel); color: var(--steel); margin-left: 0.8rem;
+    }
+    .accordion-arrow {
+      color: var(--amber); font-size: 1rem; transition: transform 0.25s; flex-shrink: 0;
+    }
+    .accordion-header.open .accordion-arrow { transform: rotate(180deg); }
+    .accordion-body {
+      display: none; padding: 1.2rem 1.8rem 1.6rem;
+    }
+    .accordion-body.open { display: block; }
+    .topic-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.5rem;
+    }
+    .topic-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; color: var(--muted); padding: 0.35rem 0;
+    }
+    .topic-item::before { content: '▸'; color: var(--amber); font-size: 0.65rem; flex-shrink: 0; }
+
+    /* ── DPE GOUGE ── */
+    .dpe-banner {
+      margin: 0 5vw 0;
+      background: rgba(245,166,35,0.06);
+      border: 1px solid rgba(245,166,35,0.2);
+      padding: 1.8rem 2rem;
+      display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;
+    }
+    .dpe-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .dpe-content {}
+    .dpe-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.05em; margin-bottom: 0.4rem;
+    }
+    .dpe-body { font-size: 0.83rem; color: var(--muted); line-height: 1.65; max-width: 680px; }
+    .dpe-disclaimer {
+      display: inline-block; margin-top: 0.6rem;
+      font-size: 0.7rem; color: var(--steel); font-style: italic;
+    }
+
+    /* ── RUNWAY DIVIDER ── */
+    .runway-divider {
+      height: 60px; background: var(--navy); position: relative; overflow: hidden;
+    }
+    .runway-divider::after {
+      content: '';
+      position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      transform: translateY(-50%); opacity: 0.3;
+    }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background: var(--amber); padding: 3rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .strip-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--navy); opacity: 0.6; margin-bottom: 0.3rem; }
+    .strip-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.5rem, 3.5vw, 2.4rem); color: var(--navy); letter-spacing: 0.03em; line-height: 1.1; }
+    .strip-body { font-size: 0.88rem; color: var(--navy); opacity: 0.7; margin-top: 0.4rem; max-width: 440px; }
+    .btn-dark {
+      background: var(--navy); color: var(--white);
+      padding: 0.9rem 2.2rem; font-weight: 700; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+      transition: background 0.2s; display: inline-block;
+    }
+    .btn-dark:hover { background: var(--navy2); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f1c; padding: 2rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(138,155,176,0.08);
+    }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.12em; color: var(--steel); }
+    .footer-logo span { color: var(--amber); }
+    footer p { font-size: 0.75rem; color: var(--steel); opacity: 0.6; }
+
+    @media (max-width: 900px) {
+      .expect-grid { grid-template-columns: 1fr; }
+      .pricing-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .cta-strip { flex-direction: column; }
+      .header-bg-text { display: none; }
+      .dpe-banner { margin: 0 4vw; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html"><span>APEX</span> FLIGHT</a>
+  <ul class="nav-links">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#finishup">Finish-Up</a></li>
+    <li><a href="fleet.html">Fleet</a></li>
+    <li><a href="services.html">Other Services</a></li>
+    <li><a href="timebuilding.html">Time Building</a></li>
+    <li><a href="oralprep.html" class="active">Oral Prep</a></li>
+    <li><a href="index.html#locations">Locations</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Book a Session</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#programs">Programs</a>
+  <a href="index.html#finishup">Finish-Up</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="services.html">Other Services</a>
+  <a href="timebuilding.html">Time Building</a>
+  <a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="index.html#contact" class="mobile-cta">Book a Session</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="header-bg-text">ORAL PREP</div>
+  <div class="page-eyebrow">Pass Your Checkride Oral</div>
+  <h1 class="page-title">Checkride<br><em>Oral Prep</em></h1>
+  <p class="page-sub">
+    One-on-one oral preparation with an experienced instructor — online via Google Meet, covering every topic the examiner will test you on. Walk into your checkride with clarity, confidence, and a binder that's ready to go.
+  </p>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="dot"></div> 5–7 Hour Deep-Dive Session</div>
+  <div class="trust-item"><div class="dot"></div> 100% Online via Google Meet</div>
+  <div class="trust-item"><div class="dot"></div> All ACS Topics Covered</div>
+  <div class="trust-item"><div class="dot"></div> DPE Gouges Discussed*</div>
+  <div class="trust-item"><div class="dot"></div> Checkride Binder Preparation</div>
+  <div class="trust-item"><div class="dot"></div> Endorsement Verification</div>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="section-eyebrow">What's Included</div>
+  <h2 class="section-title">Everything You Need to Pass the Oral</h2>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">📖</div>
+      <div class="feature-title">Complete ACS Coverage</div>
+      <div class="feature-body">Every topic area from the FAA's Airmen Certification Standards — the exact document the DPE uses to test you. We go deep on all areas, not just the easy ones. Nothing gets skipped.</div>
+      <div class="feature-tag">5–7 Hours</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">💻</div>
+      <div class="feature-title">Online via Google Meet</div>
+      <div class="feature-body">Conduct your entire prep session from home, a hotel, or anywhere with an internet connection. No travel required — just you, your instructor, and the material. Share screens, diagrams, and charts in real time.</div>
+      <div class="feature-tag">Anywhere, Any Timezone</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <div class="feature-title">Clarity on Concepts</div>
+      <div class="feature-body">Not memorization drills — we build genuine understanding. You'll be able to explain the "why" behind every answer, which is exactly what separates a confident applicant from one who gets tripped up on follow-up questions.</div>
+      <div class="feature-tag">Not Just Q&A</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">DPE Gouges — When Available</div>
+      <div class="feature-body">Our network of instructors and onsite DPE relationships means we often have insight into the specific areas a particular examiner focuses on. When this information is available, we discuss it during your session.</div>
+      <div class="feature-tag">*When Available</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">📁</div>
+      <div class="feature-title">Checkride Binder Preparation</div>
+      <div class="feature-body">We walk through exactly what your binder needs to contain — aircraft documents, logbook, medical, endorsements, and knowledge test results — organized the way examiners expect to see it. No last-minute scramble.</div>
+      <div class="feature-tag">Arrive Organized</div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">✅</div>
+      <div class="feature-title">Endorsement Verification</div>
+      <div class="feature-body">We review every required endorsement in your logbook to confirm it's correctly worded, dated, and signed — including solo, knowledge test, and final checkride endorsements. Logbook errors are a common reason applications get delayed at the examiner's desk.</div>
+      <div class="feature-tag">No Surprises at the Desk</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DPE GOUGE BANNER -->
+<div class="dpe-banner" style="margin-top: 3rem;">
+  <div class="dpe-icon">🔍</div>
+  <div class="dpe-content">
+    <div class="dpe-title">About DPE Gouges</div>
+    <div class="dpe-body">
+      A "gouge" is inside information — topics, scenarios, or questions a particular DPE is known to focus on during orals. Through our onsite DPE relationships and instructor network, we sometimes have access to this kind of insight for specific examiners. When a gouge is available for your examiner, we'll discuss it in your session. We don't guarantee gouges for every DPE, but when we have them, they're yours.
+    </div>
+    <span class="dpe-disclaimer">*Gouge availability varies by examiner. Not guaranteed for all checkrides.</span>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing" style="padding-top: 80px;">
+  <div class="section-eyebrow">Session Pricing</div>
+  <h2 class="section-title">Simple, Flat-Rate Pricing</h2>
+  <p class="section-body">One price covers the full session — no per-hour billing, no surprises. Book your certificate below.</p>
+
+  <div class="pricing-layout">
+
+    <!-- Standard Orals -->
+    <div>
+      <div class="pricing-group-label">Certificate &amp; Rating Orals</div>
+      <div class="pricing-cards">
+
+        <div class="pricing-card">
+          <div class="pc-left">
+            <div class="pc-cert">Private Pilot (PPL)</div>
+            <div class="pc-detail">5–7 hrs · Full ACS · Binder prep · Endorsement check</div>
+          </div>
+          <div class="pc-price">$200</div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pc-left">
+            <div class="pc-cert">Instrument Rating (IFR)</div>
+            <div class="pc-detail">5–7 hrs · Full ACS · Approach briefings · Binder prep</div>
+          </div>
+          <div class="pc-price">$200</div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pc-left">
+            <div class="pc-cert">Commercial Pilot (CPL)</div>
+            <div class="pc-detail">5–7 hrs · Full ACS · XC planning · Binder prep</div>
+          </div>
+          <div class="pc-price">$200</div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pc-left">
+            <div class="pc-cert">Multi-Engine Add-On</div>
+            <div class="pc-detail">5–7 hrs · Systems deep-dive · V-speeds · Engine-out procedures</div>
+          </div>
+          <div class="pc-price">$200</div>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pc-left">
+            <div class="pc-cert">Instructor Add-On (Rating)</div>
+            <div class="pc-detail">5–7 hrs · Teaching methodology · FARs · Binder prep</div>
+          </div>
+          <div class="pc-price">$200</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CFI Initial -->
+    <div>
+      <div class="pricing-group-label">Instructor Initial — CFI</div>
+      <div class="pricing-cfi-box">
+        <div class="cfi-label">Most Comprehensive Prep</div>
+        <div class="cfi-title">CFI Initial Oral Prep</div>
+        <div class="cfi-subtitle">Fundamentals of Instruction · Flight Instructor ACS · Full Oral Simulation</div>
+        <div class="cfi-desc">
+          The CFI oral is the hardest in general aviation — you're tested not just on aeronautical knowledge but on your ability to teach it. Our CFI prep session covers the FOI, FIA, the instructor PTS, and everything the examiner will expect you to explain clearly and demonstrate instructional competency on.
+        </div>
+        <div class="cfi-price-row">
+          <div>
+            <div class="cfi-from">Session Rate</div>
+            <div class="cfi-price-num">$500</div>
+            <div class="cfi-price-note">5–7+ hrs · Includes all areas below</div>
+          </div>
+        </div>
+        <div style="font-size:0.7rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--steel); margin-bottom:0.7rem;">What's Covered</div>
+        <div class="cfi-includes">
+          <div class="cfi-include-item">Fundamentals of Instruction (FOI) — learning theories, teaching methods</div>
+          <div class="cfi-include-item">Human factors, communication, and critique techniques</div>
+          <div class="cfi-include-item">Lesson plan review and instructional flow</div>
+          <div class="cfi-include-item">Full Flight Instructor ACS coverage</div>
+          <div class="cfi-include-item">Spin endorsement requirements and aerodynamics</div>
+          <div class="cfi-include-item">DPE gouge for your examiner (when available)</div>
+          <div class="cfi-include-item">Binder prep and endorsement verification</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="runway-divider"></div>
+
+<!-- WHAT TO EXPECT -->
+<section style="background: var(--navy2);">
+  <div class="section-eyebrow">Session Format</div>
+  <h2 class="section-title">What to Expect</h2>
+
+  <div class="expect-grid">
+
+    <div>
+      <div class="expect-callout">
+        <div class="expect-callout-label">Session Length</div>
+        <div class="expect-callout-num">5–7</div>
+        <div class="expect-callout-unit">Hours — full day coverage</div>
+        <div class="expect-callout-divider"></div>
+        <div class="expect-callout-platform">
+          <div class="platform-icon">📹</div>
+          <div class="platform-label">
+            <strong>Google Meet</strong>
+            Online · No travel · Screen sharing
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="expect-items">
+      <div class="expect-item">
+        <div class="expect-num">01</div>
+        <div>
+          <div class="expect-item-title">Pre-Session Logbook &amp; Document Review</div>
+          <div class="expect-item-body">Before we start the oral topics, you'll share your logbook pages, endorsements, and knowledge test results. We verify everything is in order and flag any issues before the actual checkride.</div>
+        </div>
+      </div>
+      <div class="expect-item">
+        <div class="expect-num">02</div>
+        <div>
+          <div class="expect-item-title">ACS Topic-by-Topic Deep Dive</div>
+          <div class="expect-item-body">We work through every ACS task area methodically — regulations, weather, systems, performance, airspace, navigation, emergencies. Your instructor asks the question, you answer, then we discuss and build the concept until it sticks.</div>
+        </div>
+      </div>
+      <div class="expect-item">
+        <div class="expect-num">03</div>
+        <div>
+          <div class="expect-item-title">Scenario-Based Question Practice</div>
+          <div class="expect-item-body">Most examiners use scenarios rather than direct questions. We practice the "you're flying to X and Y happens — what do you do?" format so you're not caught off guard by open-ended questions on test day.</div>
+        </div>
+      </div>
+      <div class="expect-item">
+        <div class="expect-num">04</div>
+        <div>
+          <div class="expect-item-title">DPE Gouge Discussion</div>
+          <div class="expect-item-body">If we have specific insight on your examiner's focus areas, tendencies, or favorite topics, we'll cover those last so they're fresh. This part of the session can change your preparation significantly.</div>
+        </div>
+      </div>
+      <div class="expect-item">
+        <div class="expect-num">05</div>
+        <div>
+          <div class="expect-item-title">Checkride Binder Walkthrough</div>
+          <div class="expect-item-body">We go through your binder item by item — airworthiness documents, registration, POH, weight &amp; balance, equipment list, maintenance records. You'll know exactly what to hand the examiner and in what order.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TOPICS ACCORDION -->
+<section class="topics-section">
+  <div class="topics-intro">
+    <div class="section-eyebrow">Topics by Certificate</div>
+    <h2 class="section-title">What We Cover</h2>
+    <p class="section-body">Every session is tailored to the certificate you're testing for. Click a certificate below to see the major topic areas we cover.</p>
+  </div>
+
+  <div class="accordion">
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="accordion-title">Private Pilot — PPL</div>
+          <span class="accordion-badge">$200</span>
+        </div>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="topic-grid">
+          <div class="topic-item">Certificates &amp; Documents (ARROW)</div>
+          <div class="topic-item">Airspace classification &amp; requirements</div>
+          <div class="topic-item">Weather theory &amp; METARs/TAFs</div>
+          <div class="topic-item">Weather products &amp; decision making</div>
+          <div class="topic-item">VFR flight planning &amp; sectionals</div>
+          <div class="topic-item">Performance charts &amp; calculations</div>
+          <div class="topic-item">Weight &amp; balance</div>
+          <div class="topic-item">Aircraft systems — engine, electrical, fuel</div>
+          <div class="topic-item">Pitot-static system &amp; instruments</div>
+          <div class="topic-item">Emergency procedures &amp; scenarios</div>
+          <div class="topic-item">Night operations &amp; lighting</div>
+          <div class="topic-item">FARs — Part 61, 91</div>
+          <div class="topic-item">Medical requirements</div>
+          <div class="topic-item">Radio communications &amp; phraseology</div>
+          <div class="topic-item">Aerodynamics — stalls, spins, load factor</div>
+          <div class="topic-item">Endorsement &amp; logbook review</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="accordion-title">Instrument Rating — IFR</div>
+          <span class="accordion-badge">$200</span>
+        </div>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="topic-grid">
+          <div class="topic-item">IFR regulations — Part 91 IFR rules</div>
+          <div class="topic-item">Currency requirements (66HIT)</div>
+          <div class="topic-item">IFR weather minimums &amp; alternates</div>
+          <div class="topic-item">Weather analysis — AIRMETs, SIGMETs, prog charts</div>
+          <div class="topic-item">IFR flight planning &amp; filing</div>
+          <div class="topic-item">Departure, en-route, approach procedures</div>
+          <div class="topic-item">Holding patterns — entry, timing, corrections</div>
+          <div class="topic-item">ILS, VOR, RNAV, LPV approaches</div>
+          <div class="topic-item">Approach minimums — DA vs MDA</div>
+          <div class="topic-item">Missed approach &amp; alternate selection</div>
+          <div class="topic-item">Instrument failure &amp; partial panel</div>
+          <div class="topic-item">Icing — types, systems, avoidance</div>
+          <div class="topic-item">LAHSO, special use airspace IFR</div>
+          <div class="topic-item">ATC clearances &amp; lost comms</div>
+          <div class="topic-item">Avionics — GPS, G1000 IFR usage</div>
+          <div class="topic-item">Endorsement &amp; logbook review</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="accordion-title">Commercial Pilot — CPL</div>
+          <span class="accordion-badge">$200</span>
+        </div>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="topic-grid">
+          <div class="topic-item">Commercial privileges &amp; limitations</div>
+          <div class="topic-item">FAR Part 119, 135 overview</div>
+          <div class="topic-item">Complex &amp; high-performance aircraft systems</div>
+          <div class="topic-item">High altitude ops &amp; supplemental O₂</div>
+          <div class="topic-item">Advanced aerodynamics &amp; VG curves</div>
+          <div class="topic-item">Chandelles, lazy 8s, eights-on-pylons</div>
+          <div class="topic-item">Steep turns &amp; steep spirals</div>
+          <div class="topic-item">Commercial cross-country requirements</div>
+          <div class="topic-item">Night XC requirements &amp; procedures</div>
+          <div class="topic-item">TAA operations &amp; autopilot use</div>
+          <div class="topic-item">Performance — density altitude, charts</div>
+          <div class="topic-item">Weight &amp; balance — advanced loading</div>
+          <div class="topic-item">Fatigue, ADM, crew resource management</div>
+          <div class="topic-item">Emergency equipment &amp; survival</div>
+          <div class="topic-item">Endorsement &amp; logbook review</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="accordion-title">Multi-Engine Add-On</div>
+          <span class="accordion-badge">$200</span>
+        </div>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="topic-grid">
+          <div class="topic-item">Multi-engine aerodynamics</div>
+          <div class="topic-item">Critical engine — P-factor, torque, slipstream</div>
+          <div class="topic-item">Vmc — definition, factors, demonstration</div>
+          <div class="topic-item">Vsse, Vyse, Vxse — blue-line speeds</div>
+          <div class="topic-item">Engine-out climb performance</div>
+          <div class="topic-item">Engine-out identification &amp; procedures</div>
+          <div class="topic-item">Feathering — when &amp; how</div>
+          <div class="topic-item">Fuel system &amp; cross-feed procedures</div>
+          <div class="topic-item">Electrical systems — dual bus operations</div>
+          <div class="topic-item">Hydraulic &amp; landing gear systems</div>
+          <div class="topic-item">Pressurization (if applicable)</div>
+          <div class="topic-item">Multi-engine performance charts</div>
+          <div class="topic-item">Weight &amp; balance — multi-engine</div>
+          <div class="topic-item">Emergency procedures — fire, forced landing</div>
+          <div class="topic-item">Endorsement &amp; logbook review</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="accordion-title">CFI Initial — Flight Instructor</div>
+          <span class="accordion-badge" style="border-color:var(--amber); color:var(--amber);">$500</span>
+        </div>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="topic-grid">
+          <div class="topic-item">Fundamentals of Instruction — all 8 elements</div>
+          <div class="topic-item">Learning theories — behaviorism, cognitive</div>
+          <div class="topic-item">Human behavior &amp; effective communication</div>
+          <div class="topic-item">Teaching methods — lecture, demonstration-performance</div>
+          <div class="topic-item">Assessment &amp; critique techniques</div>
+          <div class="topic-item">Instructor characteristics &amp; responsibilities</div>
+          <div class="topic-item">Lesson planning &amp; training syllabi</div>
+          <div class="topic-item">Aviation instructors &amp; training programs</div>
+          <div class="topic-item">CFI privileges &amp; limitations — FAR 61.193</div>
+          <div class="topic-item">Endorsement requirements — all common</div>
+          <div class="topic-item">Solo requirements &amp; student pilot regulations</div>
+          <div class="topic-item">Aeronautical decision making &amp; SRM</div>
+          <div class="topic-item">Stall &amp; spin aerodynamics — teaching them</div>
+          <div class="topic-item">Spin endorsement — requirements &amp; maneuver</div>
+          <div class="topic-item">Flight instructor records — FAR 61.189</div>
+          <div class="topic-item">IACRA — completing flight training records</div>
+          <div class="topic-item">Common student errors &amp; how to correct them</div>
+          <div class="topic-item">DPE gouge (when available)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div style="display:flex; align-items:center; gap:0.8rem;">
+          <div class="accordion-title">Instructor Add-On Rating</div>
+          <span class="accordion-badge">$200</span>
+        </div>
+        <span class="accordion-arrow">▾</span>
+      </div>
+      <div class="accordion-body">
+        <div class="topic-grid">
+          <div class="topic-item">Add-on rating privileges &amp; limitations</div>
+          <div class="topic-item">Category &amp; class differences review</div>
+          <div class="topic-item">New endorsements applicable to add-on</div>
+          <div class="topic-item">Teaching the new category/class operations</div>
+          <div class="topic-item">Systems specific to add-on aircraft</div>
+          <div class="topic-item">Updated endorsement &amp; logbook review</div>
+          <div class="topic-item">DPE gouge (when available)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <div>
+    <div class="strip-label">Book Your Session</div>
+    <div class="strip-title">Your checkride oral<br>is one session away.</div>
+    <p class="strip-body">Tell us which certificate you're testing for and your target checkride date. We'll schedule your prep session with plenty of time to digest the material.</p>
+  </div>
+  <a href="index.html#contact" class="btn-dark">Book Oral Prep</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>APEX</span> FLIGHT TRAINING</div>
+  <p>© 2026 Apex Flight Training · Flagler County Airport, FL · info@apexflighttraining.com</p>
+  <p style="opacity:0.4; font-size:0.7rem;">DPE gouge availability not guaranteed for all examiners. All oral prep conducted to current FAA ACS standards.</p>
+</footer>
+
+<script>
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+
+  // Accordion
+  function toggleAccordion(header) {
+    const body = header.nextElementSibling;
+    const isOpen = header.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('open'));
+    document.querySelectorAll('.accordion-body').forEach(b => b.classList.remove('open'));
+
+    // Open this one if it was closed
+    if (!isOpen) {
+      header.classList.add('open');
+      body.classList.add('open');
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Building | Apex Flight Training</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:  #0B1628;
+      --navy2: #112040;
+      --blue:  #1E6FA8;
+      --sky:   #4FA8D8;
+      --amber: #F5A623;
+      --white: #FFFFFF;
+      --steel: #8A9BB0;
+      --muted: #C4D0DE;
+      --card:  #152135;
+      --green: #7dd4a8;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; height: 64px;
+      background: rgba(11,22,40,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,166,35,0.15);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem;
+      letter-spacing: 0.12em; color: var(--white); text-decoration: none;
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--amber); }
+
+    /* HAMBURGER */
+    .nav-hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:6px; z-index:200; }
+    .nav-hamburger span { display:block; width:24px; height:2px; background:var(--white); transition:transform 0.25s, opacity 0.25s; }
+    .nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity:0; }
+    .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-menu { display:none; position:fixed; top:64px; left:0; right:0; bottom:0; background:rgba(11,22,40,0.98); backdrop-filter:blur(16px); z-index:99; flex-direction:column; padding:2rem 5vw; overflow-y:auto; }
+    .mobile-menu.open { display:flex; }
+    .mobile-menu a { text-decoration:none; color:var(--muted); font-size:1.3rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; padding:1rem 0; border-bottom:1px solid rgba(138,155,176,0.1); transition:color 0.2s; }
+    .mobile-menu a:hover { color:var(--amber); }
+    .mobile-menu a.mobile-cta { margin-top:1.5rem; background:var(--amber); color:var(--navy); text-align:center; padding:1rem; border-bottom:none; font-weight:700; }
+    .nav-cta {
+      background: var(--amber); color: var(--navy);
+      border: none; padding: 0.5rem 1.4rem;
+      font-family: 'Inter', sans-serif; font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #ffc14d; }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      padding: 130px 5vw 70px;
+      background: linear-gradient(135deg, #0B1628 0%, #0e2040 60%, #0B1628 100%);
+      position: relative; overflow: hidden;
+    }
+    .page-header::after {
+      content: '';
+      position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      opacity: 0.3;
+    }
+    /* Decorative hour counter */
+    .header-bg-num {
+      position: absolute; right: 5vw; top: 50%; transform: translateY(-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(8rem, 20vw, 16rem);
+      color: rgba(245,166,35,0.04);
+      letter-spacing: -0.02em;
+      pointer-events: none; user-select: none;
+      line-height: 1;
+    }
+    .page-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      letter-spacing: 0.03em; line-height: 0.95; position: relative; z-index: 1;
+    }
+    .page-title em { color: var(--amber); font-style: normal; }
+    .page-sub {
+      margin-top: 1.2rem; font-size: 1rem;
+      color: var(--muted); max-width: 560px; line-height: 1.65; font-weight: 300;
+      position: relative; z-index: 1;
+    }
+
+    /* ── STAT BAR ── */
+    .stat-bar {
+      background: var(--navy2);
+      border-top: 1px solid rgba(245,166,35,0.2);
+      border-bottom: 1px solid rgba(245,166,35,0.1);
+      padding: 1.5rem 5vw;
+      display: flex; gap: 3rem; flex-wrap: wrap; align-items: center;
+    }
+    .stat-item { display: flex; flex-direction: column; gap: 0.15rem; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem; color: var(--amber); letter-spacing: 0.04em; line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--steel);
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 70px 5vw; }
+    section:nth-child(even) { background: var(--navy2); }
+    .section-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.25em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.04em;
+      margin-bottom: 0.8rem; line-height: 1.05;
+    }
+    .section-body {
+      font-size: 0.95rem; color: var(--muted);
+      max-width: 600px; line-height: 1.7; font-weight: 300;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5px; margin-top: 2.5rem;
+    }
+    .step-card {
+      background: var(--card); padding: 1.8rem 1.6rem;
+    }
+    .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem; color: rgba(245,166,35,0.2);
+      letter-spacing: 0.05em; line-height: 1; margin-bottom: 0.8rem;
+    }
+    .step-title {
+      font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--white);
+    }
+    .step-body { font-size: 0.82rem; color: var(--muted); line-height: 1.6; font-weight: 300; }
+
+    /* ── WHO IS THIS FOR ── */
+    .audience-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .audience-card {
+      background: var(--card); padding: 1.5rem;
+      border-left: 3px solid transparent; transition: border-color 0.2s;
+    }
+    .audience-card:hover { border-color: var(--amber); }
+    .audience-icon { font-size: 1.4rem; margin-bottom: 0.7rem; }
+    .audience-title { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.35rem; }
+    .audience-body { font-size: 0.8rem; color: var(--muted); line-height: 1.55; font-weight: 300; }
+
+    /* ── AIRCRAFT & RATES ── */
+    .aircraft-section { background: var(--navy2); }
+
+    .rates-intro {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem;
+    }
+
+    /* Tab switcher */
+    .tab-bar {
+      display: flex; gap: 0; margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: var(--card); border: none; color: var(--steel);
+      padding: 0.7rem 1.4rem; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      border-right: 1px solid rgba(138,155,176,0.1);
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn.active { background: var(--amber); color: var(--navy); }
+    .tab-btn:hover:not(.active) { background: #1a2d47; color: var(--muted); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Aircraft rate cards */
+    .aircraft-rates-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5px;
+    }
+    .aircraft-rate-card {
+      background: var(--card); overflow: hidden;
+    }
+    .arc-header {
+      background: #0d1c30; padding: 1.4rem 1.8rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(138,155,176,0.08);
+    }
+    .arc-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 0.06em;
+    }
+    .arc-badge {
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 0.2rem 0.55rem;
+      border: 1px solid; 
+    }
+    .arc-badge-vfr { border-color: var(--steel); color: var(--steel); }
+    .arc-badge-ifr { border-color: var(--sky); color: var(--sky); }
+    .arc-badge-taa { border-color: var(--amber); color: var(--amber); }
+    .arc-badge-complex { border-color: var(--green); color: var(--green); }
+
+    .arc-body { padding: 1.4rem 1.8rem; }
+    .arc-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; margin-bottom: 1.2rem; }
+
+    /* Rate tables */
+    .rate-type-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--steel); margin-bottom: 0.6rem; margin-top: 1rem;
+    }
+    .rate-type-label:first-child { margin-top: 0; }
+
+    .rate-rows { display: flex; flex-direction: column; gap: 3px; }
+    .rate-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: rgba(255,255,255,0.02); padding: 0.45rem 0.7rem;
+    }
+    .rate-row:hover { background: rgba(245,166,35,0.05); }
+    .rate-hours { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+    .rate-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem; color: var(--amber); letter-spacing: 0.05em;
+    }
+    .rate-row-best { background: rgba(245,166,35,0.07); }
+    .rate-row-best .rate-hours::after {
+      content: ' BEST VALUE';
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em;
+      color: var(--green); margin-left: 0.4rem;
+    }
+
+    /* ── FUEL NOTE ── */
+    .fuel-note {
+      background: rgba(30,111,168,0.1);
+      border: 1px solid rgba(79,168,216,0.2);
+      padding: 1rem 1.3rem;
+      display: flex; gap: 0.8rem; align-items: flex-start;
+      margin-top: 2rem; font-size: 0.82rem; color: var(--muted); line-height: 1.6;
+    }
+    .fuel-note-icon { color: var(--sky); flex-shrink: 0; }
+
+    /* ── REQUIREMENTS ── */
+    .req-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;
+    }
+    .req-box { background: var(--card); padding: 1.8rem; }
+    .req-box-title {
+      font-weight: 700; font-size: 0.88rem; color: var(--white);
+      margin-bottom: 1rem; padding-bottom: 0.7rem;
+      border-bottom: 1px solid rgba(138,155,176,0.12);
+    }
+    .req-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .req-item {
+      display: flex; gap: 0.6rem; align-items: flex-start;
+      font-size: 0.8rem; color: var(--muted); line-height: 1.5;
+    }
+    .req-item::before { content: '→'; color: var(--amber); flex-shrink: 0; font-size: 0.75rem; margin-top: 1px; }
+
+    /* ── INTL SECTION ── */
+    .intl-block {
+      background: var(--card); border-left: 3px solid var(--sky);
+      padding: 2rem 2.2rem; margin-top: 2rem;
+    }
+    .intl-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+    }
+    .intl-body {
+      font-size: 0.85rem; color: var(--muted); line-height: 1.65;
+      font-weight: 300; max-width: 680px; margin-bottom: 1.2rem;
+    }
+    .intl-steps {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem; margin-top: 1.2rem;
+    }
+    .intl-step {
+      background: rgba(79,168,216,0.06); border: 1px solid rgba(79,168,216,0.15);
+      padding: 1rem;
+    }
+    .intl-step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; color: var(--sky); letter-spacing: 0.08em; margin-bottom: 0.3rem;
+    }
+    .intl-step-text { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── RUNWAY DIVIDER ── */
+    .runway-divider {
+      height: 60px; background: var(--navy); position: relative; overflow: hidden;
+    }
+    .runway-divider::after {
+      content: '';
+      position: absolute; left: 0; right: 0; top: 50%; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, var(--amber) 0px, var(--amber) 40px,
+        transparent 40px, transparent 70px
+      );
+      transform: translateY(-50%); opacity: 0.3;
+    }
+
+    /* ── CTA STRIP ── */
+    .cta-strip {
+      background: var(--amber); padding: 3rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+    }
+    .cta-strip .strip-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--navy); opacity: 0.6; margin-bottom: 0.3rem;
+    }
+    .cta-strip .strip-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem); color: var(--navy); letter-spacing: 0.03em; line-height: 1.1;
+    }
+    .cta-strip .strip-body {
+      font-size: 0.88rem; color: var(--navy); opacity: 0.7; margin-top: 0.4rem; max-width: 440px;
+    }
+    .btn-dark {
+      background: var(--navy); color: var(--white);
+      padding: 0.9rem 2.2rem; font-weight: 700; font-size: 0.88rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      text-decoration: none; white-space: nowrap;
+      transition: background 0.2s; display: inline-block;
+    }
+    .btn-dark:hover { background: var(--navy2); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #070f1c; padding: 2rem 5vw;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+      border-top: 1px solid rgba(138,155,176,0.08);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem; letter-spacing: 0.12em; color: var(--steel);
+    }
+    .footer-logo span { color: var(--amber); }
+    footer p { font-size: 0.75rem; color: var(--steel); opacity: 0.6; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .nav-cta { display: none; }
+      .req-grid { grid-template-columns: 1fr; }
+      .cta-strip { flex-direction: column; }
+      .header-bg-num { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html"><span>APEX</span> FLIGHT</a>
+  <ul class="nav-links">
+    <li><a href="index.html#programs">Programs</a></li>
+    <li><a href="index.html#finishup">Finish-Up</a></li>
+    <li><a href="fleet.html">Fleet</a></li>
+    <li><a href="services.html">Other Services</a></li>
+    <li><a href="timebuilding.html" class="active">Time Building</a></li>
+    <li><a href="oralprep.html">Oral Prep</a></li>
+    <li><a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Start Training</a>
+  <button class="nav-hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#programs">Programs</a>
+  <a href="index.html#finishup">Finish-Up</a>
+  <a href="fleet.html">Fleet</a>
+  <a href="services.html">Other Services</a>
+  <a href="timebuilding.html">Time Building</a>
+  <a href="oralprep.html">Oral Prep</a>
+  <a href="index.html#locations">Locations</a>
+  <a href="index.html#contact">Contact</a>
+  <a href="index.html#contact" class="mobile-cta">Start Training</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="header-bg-num">1500</div>
+  <div class="page-eyebrow">Build Your Hours · Reach 1,500</div>
+  <h1 class="page-title">Time<br><em>Building</em></h1>
+  <p class="page-sub">
+    Florida's ideal flying weather, low block rates, and an 8-location partner network make this one of the best places in the country to build hours fast. Solo or shared — we have the aircraft and the program to get you to ATP minimums.
+  </p>
+</div>
+
+<!-- STAT BAR -->
+<div class="stat-bar">
+  <div class="stat-item">
+    <span class="stat-num">1,500</span>
+    <span class="stat-label">ATP Minimum Hours</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">50+</span>
+    <span class="stat-label">Min Block Hours</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">$44</span>
+    <span class="stat-label">Lowest Rate / hr</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">6</span>
+    <span class="stat-label">Min Hours / Day</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">300+</span>
+    <span class="stat-label">Flying Days / Year in FL</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-eyebrow">The Process</div>
+  <h2 class="section-title">How Time Building Works</h2>
+  <p class="section-body">We don't do ad-hoc rentals for time building. Aircraft are reserved and issued to you for the duration of your block — so you have guaranteed access every single day, no scheduling fights.</p>
+
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">Choose Your Block</div>
+      <div class="step-body">Select the aircraft and hour block that matches your goals — from 50 hours to 1,000+. Larger blocks get deeper discounts.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">Aircraft Dispatched to You</div>
+      <div class="step-body">Once insurance and qualifications are confirmed, the aircraft is yours for the entire block period. No sharing, no competing with other renters.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">Fly Every Day</div>
+      <div class="step-body">Minimum 6 hours per day / ~42 hours per week. Florida's 300+ VFR days per year mean almost nothing stops you from flying on schedule.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-title">Solo or Shared</div>
+      <div class="step-body">Fly solo as PIC, or split costs with another time builder — both options are structured. Shared time cuts your per-hour cost nearly in half.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">05</div>
+      <div class="step-title">Cross-Country Anywhere</div>
+      <div class="step-body">Use Florida's ideal geography for meaningful XC routes — up and down the coasts, to the Bahamas, through Georgia and the Carolinas. Real PIC time, real experience.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">06</div>
+      <div class="step-title">Reach Your Target</div>
+      <div class="step-body">Most pilots building 100–150 hours finish in about 4 weeks. At the 1,000+ hour block, you're on a direct runway to ATP minimums.</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS THIS FOR -->
+<section>
+  <div class="section-eyebrow">Who Should Time Build</div>
+  <h2 class="section-title">Is This Program For You?</h2>
+
+  <div class="audience-grid">
+    <div class="audience-card">
+      <div class="audience-icon">🎯</div>
+      <div class="audience-title">New Commercial Pilots</div>
+      <div class="audience-body">Just got your CPL? You need hours before the regionals will look at you. Block time building is the fastest, most cost-effective path from 250 to 1,500 hours.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">✈</div>
+      <div class="audience-title">International Pilots</div>
+      <div class="audience-body">Holding a foreign license and need FAA hours? We assist with foreign pilot verification and FAA PPL conversion, then get you into the aircraft immediately.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🌐</div>
+      <div class="audience-title">ATP-Track Pilots</div>
+      <div class="audience-body">Mapping the straight line from your commercial to ATP minimums. Block hour time building at volume rates makes the math work for the 1,500-hour requirement.</div>
+    </div>
+    <div class="audience-card">
+      <div class="audience-icon">🏝</div>
+      <div class="audience-title">Leisure & Currency Pilots</div>
+      <div class="audience-body">Want to fly Florida, the Keys, or the Bahamas without the cost of ownership? A short block gives you an aircraft to yourself for a week or two of real cross-country flying.</div>
+    </div>
+  </div>
+</section>
+
+<div class="runway-divider"></div>
+
+<!-- AIRCRAFT & RATES -->
+<section class="aircraft-section">
+  <div class="rates-intro">
+    <div>
+      <div class="section-eyebrow">Aircraft &amp; Block Rates</div>
+      <h2 class="section-title">Choose Your Aircraft</h2>
+      <p class="section-body">All rates are <strong style="color:var(--white)">dry</strong> — fuel purchased separately at any FBO of your choice. Rates effective December 2024, sourced from our partner program at <strong style="color:var(--white)">Flight Time Building LLC (X50 · Edgewater, FL)</strong>.</p>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="showTab('solo')">Solo Rates</button>
+    <button class="tab-btn" onclick="showTab('shared')">Shared Rates (per pilot)</button>
+  </div>
+
+  <!-- SOLO TAB -->
+  <div class="tab-panel active" id="tab-solo">
+    <div class="aircraft-rates-grid">
+
+      <!-- C150 -->
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div>
+            <div class="arc-name">Cessna 150</div>
+            <div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Basic Trainer</div>
+          </div>
+          <span class="arc-badge arc-badge-vfr">VFR Only</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">The original time-builder. Economical, simple, and available — ideal for knocking out solo PIC hours at the lowest possible cost.</div>
+          <div class="rate-type-label">Solo Block Rates — per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$60.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$55.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$52.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$48.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$46.00/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$44.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- C152 -->
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div>
+            <div class="arc-name">Cessna 152</div>
+            <div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Dual Navcom · IFR/WAAS</div>
+          </div>
+          <span class="arc-badge arc-badge-ifr">IFR Equipped</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Step up from the 150 with full IFR avionics and WAAS GPS. The most popular choice for the 100–150 hour block (~4 weeks, ~$11,500 all-in with fuel).</div>
+          <div class="rate-type-label">Solo Block Rates — per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$64.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$59.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$56.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$52.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$50.00/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$48.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PA-38 -->
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div>
+            <div class="arc-name">Piper PA-38 Tomahawk</div>
+            <div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Dual Navcom · IFR/WAAS</div>
+          </div>
+          <span class="arc-badge arc-badge-ifr">IFR Equipped</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Low-wing two-seater with honest handling and IFR avionics. A great change-up from the Cessnas if you want to log low-wing PIC time at the same rate.</div>
+          <div class="rate-type-label">Solo Block Rates — per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$64.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$59.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$56.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$52.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$50.00/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$48.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PA-28 / C172 -->
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div>
+            <div class="arc-name">PA-28 Warrior / C172</div>
+            <div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Garmin WAAS GPS · Autopilot</div>
+          </div>
+          <span class="arc-badge arc-badge-ifr">IFR Equipped</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Four-seat cross-country workhorses with Garmin WAAS GPS, engine monitoring, and autopilot. Perfect for building real XC experience in aircraft you'll actually fly professionally.</div>
+          <div class="rate-type-label">Solo Block Rates — per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$71.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$67.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$66.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$63.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$60.00/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$58.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAA C172P -->
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div>
+            <div class="arc-name">TAA Cessna 172P</div>
+            <div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Technically Advanced Aircraft</div>
+          </div>
+          <span class="arc-badge arc-badge-taa">TAA</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Glass cockpit, full TAA designation. Build hours while genuinely improving your avionics proficiency — this time counts toward your TAA commercial requirement too.</div>
+          <div class="rate-type-label">Solo Block Rates — per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$81.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$77.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$76.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$73.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$70.00/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$68.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAA Complex PA28R-200 -->
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div>
+            <div class="arc-name">TAA Complex PA28R-200</div>
+            <div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Retractable · TAA · Complex</div>
+          </div>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <span class="arc-badge arc-badge-taa">TAA</span>
+            <span class="arc-badge arc-badge-complex">Complex</span>
+          </div>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">The premium option. Retractable gear, controllable-pitch prop, TAA glass avionics. Every hour builds toward complex, high-performance, and commercial TAA requirements simultaneously.</div>
+          <div class="rate-type-label">Solo Block Rates — per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$87.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$83.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$82.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$79.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$76.00/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$74.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SHARED TAB -->
+  <div class="tab-panel" id="tab-shared">
+    <div class="aircraft-rates-grid">
+
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div><div class="arc-name">Cessna 150</div><div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">VFR Only</div></div>
+          <span class="arc-badge arc-badge-vfr">VFR Only</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Shared rate per pilot. Split the cost with another time builder and cut your hourly rate nearly in half.</div>
+          <div class="rate-type-label">Shared Rate — per pilot per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$31.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$29.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$27.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$25.75/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$24.50/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$23.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div><div class="arc-name">Cessna 152</div><div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Dual Navcom · IFR/WAAS</div></div>
+          <span class="arc-badge arc-badge-ifr">IFR Equipped</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Most popular shared aircraft. At 150 hours, total program cost per pilot runs approximately $5,750–$7,000 including fuel.</div>
+          <div class="rate-type-label">Shared Rate — per pilot per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$33.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$31.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$29.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$27.75/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$26.50/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$25.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div><div class="arc-name">Piper PA-38 Tomahawk</div><div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Dual Navcom · IFR/WAAS</div></div>
+          <span class="arc-badge arc-badge-ifr">IFR Equipped</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Low-wing PIC time at shared prices. Good option if you want low-wing experience alongside your primary SE time.</div>
+          <div class="rate-type-label">Shared Rate — per pilot per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$33.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$31.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$29.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$27.75/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$26.50/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$25.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div><div class="arc-name">PA-28 Warrior / C172</div><div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Garmin WAAS · Autopilot</div></div>
+          <span class="arc-badge arc-badge-ifr">IFR Equipped</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Four-seat cross-country capability at shared pricing. Ideal for pilots who want to fly meaningful routes across Florida and beyond while splitting costs.</div>
+          <div class="rate-type-label">Shared Rate — per pilot per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$37.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$35.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$34.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$33.25/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$31.50/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$30.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div><div class="arc-name">TAA Cessna 172P</div><div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Glass Cockpit</div></div>
+          <span class="arc-badge arc-badge-taa">TAA</span>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Shared TAA time — build hours and glass proficiency at the same time, at rates comparable to standard trainer solo pricing.</div>
+          <div class="rate-type-label">Shared Rate — per pilot per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$43.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$41.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$40.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$39.25/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$37.50/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$36.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aircraft-rate-card">
+        <div class="arc-header">
+          <div><div class="arc-name">TAA Complex PA28R-200</div><div style="font-size:0.72rem; color:var(--steel); margin-top:0.2rem;">Retractable · Glass</div></div>
+          <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <span class="arc-badge arc-badge-taa">TAA</span>
+            <span class="arc-badge arc-badge-complex">Complex</span>
+          </div>
+        </div>
+        <div class="arc-body">
+          <div class="arc-desc">Shared complex TAA time — the best value per logged hour when you need complex, high-performance, and TAA time simultaneously.</div>
+          <div class="rate-type-label">Shared Rate — per pilot per hour</div>
+          <div class="rate-rows">
+            <div class="rate-row"><span class="rate-hours">50 Hours</span><span class="rate-price">$47.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">100 Hours</span><span class="rate-price">$45.00/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">150 Hours</span><span class="rate-price">$44.50/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">300 Hours</span><span class="rate-price">$43.25/hr</span></div>
+            <div class="rate-row"><span class="rate-hours">500 Hours</span><span class="rate-price">$41.50/hr</span></div>
+            <div class="rate-row rate-row-best"><span class="rate-hours">1,000 Hours</span><span class="rate-price">$40.00/hr</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="fuel-note">
+    <div class="fuel-note-icon">ℹ</div>
+    <div>
+      <strong style="color:var(--white)">All block rates are dry (fuel not included).</strong> Purchase fuel at any FBO of your choice along your route. Block hour discounts require pre-payment for the minimum hours and a minimum of 6 flight hours per day. Rates effective December 2024. Discounts available for blocks in excess of 500 hours — contact us.
+    </div>
+  </div>
+</section>
+
+<!-- REQUIREMENTS -->
+<section>
+  <div class="section-eyebrow">Before You Start</div>
+  <h2 class="section-title">Requirements &amp; Qualifications</h2>
+  <p class="section-body">Requirements differ slightly depending on whether you hold an FAA certificate or are an international pilot converting a foreign license.</p>
+
+  <div class="req-grid">
+    <div class="req-box">
+      <div class="req-box-title">🇺🇸 FAA Licensed Pilots</div>
+      <div class="req-list">
+        <div class="req-item">Valid FAA Private Pilot Certificate or higher</div>
+        <div class="req-item">Current medical certificate (BasicMed accepted)</div>
+        <div class="req-item">Current flight review (BFR) — we can provide one if needed</div>
+        <div class="req-item">Renters insurance (~$93/month — required before dispatch)</div>
+        <div class="req-item">Familiarization / check flight optional (not required)</div>
+        <div class="req-item">Aircraft dispatched to you upon insurance confirmation</div>
+      </div>
+    </div>
+    <div class="req-box">
+      <div class="req-box-title">🌍 International Pilots</div>
+      <div class="req-list">
+        <div class="req-item">Valid foreign pilot license (ICAO CPL or PPL equivalent)</div>
+        <div class="req-item">FAA Foreign Pilot Verification via IACRA (we assist with this)</div>
+        <div class="req-item">FAA PPL required before aircraft dispatch — we can provide training</div>
+        <div class="req-item">US Biannual Flight Review required upon receipt of FAA license</div>
+        <div class="req-item">Renters insurance (~$93/month — required before dispatch)</div>
+        <div class="req-item">FAA Third Class Medical or BasicMed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- International extra info -->
+  <div class="intl-block">
+    <div class="intl-title">International Pilot Pathway</div>
+    <div class="intl-body">If you hold a foreign ICAO license and want to build FAA hours in the US, we assist with the entire conversion process. Florida is one of the best places in the world for international pilots to build hours — excellent weather, low airspace congestion outside major hubs, and direct routing to the Bahamas and Caribbean.</div>
+    <div class="intl-steps">
+      <div class="intl-step">
+        <div class="intl-step-num">Step 1</div>
+        <div class="intl-step-text">Register on IACRA and begin FAA Foreign Pilot Verification process</div>
+      </div>
+      <div class="intl-step">
+        <div class="intl-step-num">Step 2</div>
+        <div class="intl-step-text">Obtain FAA PPL (we provide training if needed)</div>
+      </div>
+      <div class="intl-step">
+        <div class="intl-step-num">Step 3</div>
+        <div class="intl-step-text">Complete US Biannual Flight Review with our CFI</div>
+      </div>
+      <div class="intl-step">
+        <div class="intl-step-num">Step 4</div>
+        <div class="intl-step-text">Obtain renters insurance &amp; aircraft is dispatched to you</div>
+      </div>
+      <div class="intl-step">
+        <div class="intl-step-num">Step 5</div>
+        <div class="intl-step-text">Fly your block — minimum 6 hrs/day across Florida &amp; beyond</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-strip">
+  <div>
+    <div class="strip-label">Start Your Block</div>
+    <div class="strip-title">Ready to start building?<br>Let's talk hours.</div>
+    <p class="strip-body">Tell us your current hours, your target, and your timeline. We'll recommend the right aircraft, block size, and schedule to get you there efficiently.</p>
+  </div>
+  <a href="index.html#contact" class="btn-dark">Contact Us</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>APEX</span> FLIGHT TRAINING</div>
+  <p>© 2026 Apex Flight Training · Flagler County Airport, FL · info@apexflighttraining.com</p>
+  <p style="opacity:0.4; font-size:0.7rem;">Block hour rates sourced from Flight Time Building LLC (X50, Edgewater FL) · Rates effective Dec 2024 · Subject to change.</p>
+</footer>
+
+<script>
+  function showTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  function closeMenu() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>
