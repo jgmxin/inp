@@ -29,6 +29,109 @@
       overflow-x: hidden;
     }
 
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(-24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes planeFly {
+      0%   { transform: translateX(-60px) translateY(0px); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateX(calc(100vw + 60px)) translateY(-20px); opacity: 0; }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245,166,35,0.4); }
+      50%       { box-shadow: 0 0 0 8px rgba(245,166,35,0); }
+    }
+    @keyframes counterUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll-reveal base */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+    /* Stagger children */
+    .stagger-children > * {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .stagger-children.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0s; }
+    .stagger-children.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.1s; }
+    .stagger-children.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.2s; }
+    .stagger-children.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.3s; }
+    .stagger-children.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.4s; }
+    .stagger-children.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:0.5s; }
+    .stagger-children.visible > *:nth-child(7) { opacity:1; transform:none; transition-delay:0.6s; }
+    .stagger-children.visible > *:nth-child(8) { opacity:1; transform:none; transition-delay:0.7s; }
+
+    /* Flying plane easter egg */
+    .flying-plane {
+      position: fixed; top: 80px; left: 0; z-index: 200;
+      font-size: 1.8rem; pointer-events: none;
+      animation: planeFly 6s ease-in-out forwards;
+      display: none;
+    }
+
+    /* Card hover lift */
+    .program-card, .location-card, .pace-card {
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s !important;
+    }
+    .program-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .location-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+
+    /* Stat counter animation */
+    .stat-num { display: inline-block; }
+
+    /* Hero image strip */
+    .hero-image-strip {
+      display: flex; gap: 0; overflow: hidden;
+      height: 180px; margin-top: 3rem;
+      position: relative; z-index: 1;
+    }
+    .hero-img-item {
+      flex: 1; overflow: hidden; position: relative;
+      filter: brightness(0.45) saturate(0.7);
+      transition: flex 0.5s ease, filter 0.4s ease;
+      cursor: pointer;
+    }
+    .hero-img-item:hover {
+      flex: 2.5;
+      filter: brightness(0.6) saturate(0.9);
+    }
+    .hero-img-item img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    .hero-img-item:hover img { transform: scale(1.05); }
+    .hero-img-label {
+      position: absolute; bottom: 10px; left: 12px;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: rgba(255,255,255,0.7);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .hero-img-item:hover .hero-img-label { opacity: 1; }
+
+    /* Location pin pulse */
+    .location-pin { animation: pulse 2.5s infinite; border-radius: 50%; display: inline-block; }
+
     /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
@@ -605,6 +708,30 @@
     <a href="#programs" class="btn-primary">View Programs</a>
     <a href="#contact" class="btn-ghost">Get a Free Consultation</a>
   </div>
+
+  <!-- Aircraft image strip -->
+  <div class="hero-image-strip">
+    <div class="hero-img-item">
+      <img src="https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=600&q=70" alt="Cockpit" />
+      <span class="hero-img-label">Cockpit</span>
+    </div>
+    <div class="hero-img-item">
+      <img src="https://images.unsplash.com/photo-1569629743817-70d8db6c323b?w=600&q=70" alt="Training Aircraft" />
+      <span class="hero-img-label">Training Aircraft</span>
+    </div>
+    <div class="hero-img-item">
+      <img src="https://images.unsplash.com/photo-1436891620584-47fd0e565afb?w=600&q=70" alt="Flying" />
+      <span class="hero-img-label">Flying Florida</span>
+    </div>
+    <div class="hero-img-item">
+      <img src="https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=600&q=70" alt="Runway" />
+      <span class="hero-img-label">Runway</span>
+    </div>
+    <div class="hero-img-item">
+      <img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=600&q=70" alt="Glass Cockpit" />
+      <span class="hero-img-label">Glass Cockpit</span>
+    </div>
+  </div>
 </section>
 
 <!-- TRUST BAR -->
@@ -615,6 +742,55 @@
   <div class="trust-item"><div class="dot"></div> FAA Certified Instructors</div>
   <div class="trust-item"><div class="dot"></div> PPL Through Multi-Engine</div>
 </div>
+
+
+<!-- STUDENT & INSTRUCTOR PHOTOS + PATHWAY -->
+<section style="background: var(--navy2); padding: 80px 5vw 0;">
+
+  <!-- Photos Row -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5px; margin-bottom: 0;">
+
+    <!-- Student photo -->
+    <div style="position:relative; overflow:hidden; height:380px;">
+      <img src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?w=900&q=80"
+           alt="Happy student pilot"
+           style="width:100%; height:100%; object-fit:cover; object-position: center top;
+                  filter:brightness(0.55) saturate(0.8);
+                  transition: transform 0.6s ease, filter 0.4s ease;"
+           onmouseover="this.style.transform='scale(1.04)';this.style.filter='brightness(0.7) saturate(1)'"
+           onmouseout="this.style.transform='scale(1)';this.style.filter='brightness(0.55) saturate(0.8)'" />
+      <!-- gradient overlay -->
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(11,22,40,0.95) 0%, rgba(11,22,40,0.2) 55%, transparent 100%);"></div>
+      <!-- label -->
+      <div style="position:absolute; bottom:28px; left:28px;">
+        <div style="font-size:0.65rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:0.3rem;">Our Students</div>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:0.05em; line-height:1.1;">Trained. Confident.<br>Checkride Ready.</div>
+      </div>
+      <!-- amber corner accent -->
+      <div style="position:absolute; top:0; left:0; width:3px; height:60px; background:var(--amber);"></div>
+    </div>
+
+    <!-- Instructor photo -->
+    <div style="position:relative; overflow:hidden; height:380px;">
+      <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=900&q=80"
+           alt="Flight instructor"
+           style="width:100%; height:100%; object-fit:cover; object-position: center top;
+                  filter:brightness(0.55) saturate(0.8);
+                  transition: transform 0.6s ease, filter 0.4s ease;"
+           onmouseover="this.style.transform='scale(1.04)';this.style.filter='brightness(0.7) saturate(1)'"
+           onmouseout="this.style.transform='scale(1)';this.style.filter='brightness(0.55) saturate(0.8)'" />
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(11,22,40,0.95) 0%, rgba(11,22,40,0.2) 55%, transparent 100%);"></div>
+      <div style="position:absolute; bottom:28px; left:28px;">
+        <div style="font-size:0.65rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--amber); margin-bottom:0.3rem;">Our Instructors</div>
+        <div style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:0.05em; line-height:1.1;">Experienced. Focused.<br>Results-Driven.</div>
+      </div>
+      <div style="position:absolute; top:0; right:0; width:3px; height:60px; background:var(--amber);"></div>
+    </div>
+
+  </div>
+
+
+</section>
 
 <!-- PROGRAMS -->
 <section class="programs-section" id="programs">
@@ -792,66 +968,6 @@
     </div>
   </div>
 
-  <div class="program-grid">
-
-    <div class="program-card">
-      <div class="program-badge badge-flex">Finish-Up</div>
-      <div class="program-title">PPL Finish-Up</div>
-      <div class="program-duration">As Fast As Possible</div>
-      <p class="program-desc">You've put in the hours but something stalled your training — schedule conflicts, instructor changes, or life getting in the way. We pick up exactly where you are and get you across the finish line.</p>
-      <ul class="program-features">
-        <li>Free logbook review & gap assessment</li>
-        <li>Only train what you actually need</li>
-        <li>Checkride scheduled when you're ready</li>
-        <li>Oral exam prep included</li>
-      </ul>
-      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
-    </div>
-
-    <div class="program-card">
-      <div class="program-badge badge-finish">Finish-Up</div>
-      <div class="program-title">IFR Finish-Up</div>
-      <div class="program-duration">As Fast As Possible</div>
-      <p class="program-desc">Stuck on approaches, holds, or just need the remaining instrument hours? We'll review your logbook, identify the specific gaps, and run an accelerated immersion to get you checkride-ready fast.</p>
-      <ul class="program-features">
-        <li>Free CFII logbook review & gap audit</li>
-        <li>Precision & non-precision approach polish</li>
-        <li>Sim + aircraft time to close remaining hours</li>
-        <li>Onsite DPE for checkride</li>
-      </ul>
-      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
-    </div>
-
-    <div class="program-card">
-      <div class="program-badge badge-finish">Finish-Up</div>
-      <div class="program-title">Commercial Finish-Up</div>
-      <div class="program-duration">As Fast As Possible</div>
-      <p class="program-desc">Need to polish commercial maneuvers, complete cross-country requirements, or just haven't been able to commit to finishing? We'll assess where you stand and build the shortest path to your CPL checkride.</p>
-      <ul class="program-features">
-        <li>Free logbook review & XC requirement audit</li>
-        <li>Commercial maneuver refinement</li>
-        <li>TAA time & XC completion available</li>
-        <li>Onsite DPE for checkride</li>
-      </ul>
-      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
-    </div>
-
-    <div class="program-card">
-      <div class="program-badge badge-finish">Finish-Up</div>
-      <div class="program-title">Multi-Engine Finish-Up</div>
-      <div class="program-duration">As Fast As Possible</div>
-      <p class="program-desc">Partially completed your multi-engine add-on or need more time on engine-out procedures before you feel checkride-ready? Come in, we'll assess the gaps and close them out efficiently.</p>
-      <ul class="program-features">
-        <li>Free assessment flight with CFIME</li>
-        <li>Engine-out & Vmc demonstration polish</li>
-        <li>Systems oral prep included</li>
-        <li>Onsite DPE at select locations</li>
-      </ul>
-      <div class="program-price-note">Regular pay-as-you-go rates · Consult with your instructor to map the gaps</div>
-    </div>
-
-  </div>
-
   <!-- CTA note -->
   <div style="margin-top:2rem; background:var(--card); border-left:3px solid var(--amber); padding:1.2rem 1.6rem; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap;">
     <div>
@@ -921,7 +1037,7 @@
           <div class="why-icon">✈</div>
           <div>
             <div class="why-item-title">Partner Flying Club Fleet</div>
-            <div class="why-item-body">Access well-maintained aircraft across 8 locations in Florida and South Carolina. Train near home or at the location that suits your schedule.</div>
+            <div class="why-item-body">Access well-maintained aircraft across 6 partner locations across Florida. Train near home or at the location that suits your schedule.</div>
           </div>
         </div>
         <div class="why-item">
@@ -985,16 +1101,10 @@
       <div class="location-state">KTIX · Florida</div>
     </div>
 
-    <div class="location-card">
+<div class="location-card">
       <div class="location-pin">◉</div>
-      <div class="location-name">Orlando</div>
-      <div class="location-state">KORL · Florida</div>
-    </div>
-
-    <div class="location-card">
-      <div class="location-pin">◉</div>
-      <div class="location-name">Sanford</div>
-      <div class="location-state">KSFB · Florida</div>
+      <div class="location-name">DeLand</div>
+      <div class="location-state">KDED · Florida</div>
     </div>
 
     <div class="location-card">
@@ -1009,11 +1119,6 @@
       <div class="location-state">KHWO · Florida</div>
     </div>
 
-    <div class="location-card">
-      <div class="location-pin">◉</div>
-      <div class="location-name">Charleston</div>
-      <div class="location-state">KCHS · South Carolina</div>
-    </div>
 
   </div>
 </section>
@@ -1138,6 +1243,86 @@
     mobileMenu.classList.remove('open');
     document.body.style.overflow = '';
   }
+</script>
+
+<script>
+  // ── SCROLL REVEAL ──
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .stagger-children');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ── STAT COUNTER ──
+  function animateCounter(el, target, suffix = '') {
+    let start = 0;
+    const duration = 1800;
+    const step = (timestamp) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num');
+        nums.forEach(n => {
+          const val = parseInt(n.textContent.replace(/\D/g, ''));
+          const suffix = n.textContent.includes('+') ? '+' : '';
+          if (val) animateCounter(n, val, suffix);
+        });
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.hero-stats, .stat-bar').forEach(el => statsObserver.observe(el));
+
+  // ── FLYING PLANE EASTER EGG (click logo 3x) ──
+  let logoClicks = 0;
+  document.querySelector('.nav-logo').addEventListener('click', (e) => {
+    e.preventDefault();
+    logoClicks++;
+    if (logoClicks >= 3) {
+      logoClicks = 0;
+      const plane = document.createElement('div');
+      plane.className = 'flying-plane';
+      plane.textContent = '✈';
+      plane.style.display = 'block';
+      document.body.appendChild(plane);
+      setTimeout(() => plane.remove(), 6500);
+    }
+  });
+
+  // ── ADD REVEAL CLASSES TO SECTIONS DYNAMICALLY ──
+  document.querySelectorAll('.program-card').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.08}s`;
+    el.classList.add('reveal');
+  });
+  document.querySelectorAll('.location-card').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.06}s`;
+    el.classList.add('reveal');
+  });
+  document.querySelectorAll('.why-item').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.1}s`;
+    el.classList.add('reveal');
+  });
+  document.querySelectorAll('.pace-card').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.15}s`;
+    el.classList.add('reveal');
+  });
+
+  // Re-observe newly classed elements
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => observer.observe(el));
 </script>
 
 </body>

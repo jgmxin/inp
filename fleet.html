@@ -143,14 +143,23 @@
     /* Silhouette area */
     .aircraft-visual {
       background: #0d1c30;
-      height: 180px;
+      height: 200px;
       display: flex; align-items: center; justify-content: center;
       position: relative; overflow: hidden;
     }
+    .aircraft-visual img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: brightness(0.75) saturate(0.8);
+      transition: transform 0.5s ease, filter 0.4s ease;
+    }
+    .aircraft-card:hover .aircraft-visual img {
+      transform: scale(1.05);
+      filter: brightness(0.85) saturate(1);
+    }
     .aircraft-visual::before {
       content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at center bottom, rgba(30,111,168,0.15) 0%, transparent 65%);
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(to top, rgba(11,22,40,0.85) 0%, rgba(11,22,40,0.1) 50%, transparent 100%);
     }
     .aircraft-silhouette {
       font-size: 4.5rem;
@@ -160,10 +169,11 @@
       position: relative; z-index: 1;
     }
     .aircraft-model-tag {
-      position: absolute; bottom: 12px; right: 14px;
+      position: absolute; bottom: 12px; right: 14px; z-index: 2;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 0.85rem; letter-spacing: 0.15em;
-      color: var(--amber); opacity: 0.6;
+      font-size: 0.9rem; letter-spacing: 0.15em;
+      color: var(--amber); font-weight: 700;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     }
 
     .aircraft-info { padding: 1.6rem 1.8rem 2rem; }
@@ -335,17 +345,6 @@
   </p>
 </div>
 
-<!-- FLEET NOTE -->
-<div class="fleet-note" style="margin-top: 3rem;">
-  <div class="fleet-note-icon">ℹ</div>
-  <div class="fleet-note-text">
-    <strong>Aircraft availability varies by partner location.</strong> 
-    Specific aircraft are assigned based on your training location and program. 
-    Your instructor will confirm the aircraft before your first flight. 
-    All aircraft are maintained to FAA Part 91 standards by partner club maintenance teams.
-  </div>
-</div>
-
 <!-- ── SINGLE ENGINE ── -->
 <section class="fleet-section">
   <div class="fleet-category-header">
@@ -359,7 +358,7 @@
     <!-- C172 -->
     <div class="aircraft-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Cessna_172S_Skyhawk_SP,_Private_JP6817606.jpg?width=800" alt="Cessna 172 Skyhawk" />
         <div class="aircraft-model-tag">C172</div>
       </div>
       <div class="aircraft-info">
@@ -397,7 +396,7 @@
     <!-- C152 -->
     <div class="aircraft-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Cessna_152,_Air_Alliance_(D-EIFX)_01.jpg?width=800" alt="Cessna 152" />
         <div class="aircraft-model-tag">C152</div>
       </div>
       <div class="aircraft-info">
@@ -435,7 +434,7 @@
     <!-- PA-28 -->
     <div class="aircraft-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Piper_PA-28-161_Warrior_II,_Private_JP6817875.jpg?width=800" alt="Piper PA-28" />
         <div class="aircraft-model-tag">PA-28</div>
       </div>
       <div class="aircraft-info">
@@ -473,7 +472,7 @@
     <!-- DA40 -->
     <div class="aircraft-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Diamond_DA40_D-EDCB_07.jpg?width=800" alt="Diamond DA40" />
         <div class="aircraft-model-tag">DA40</div>
       </div>
       <div class="aircraft-info">
@@ -527,7 +526,7 @@
     <!-- Seminole Turbo -->
     <div class="aircraft-card twin-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Piper_PA-44-180_Seminole,_Private_JP7248461.jpg?width=800" alt="Piper Seminole" />
         <div class="aircraft-model-tag">PA-44T</div>
       </div>
       <div class="aircraft-info">
@@ -566,7 +565,7 @@
     <!-- DA42 -->
     <div class="aircraft-card twin-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Diamond_DA42_Twin_Star,_Private_JP6817438.jpg?width=800" alt="Diamond DA42" />
         <div class="aircraft-model-tag">DA42</div>
       </div>
       <div class="aircraft-info">
@@ -605,7 +604,7 @@
     <!-- Tecnam P2006T -->
     <div class="aircraft-card twin-card">
       <div class="aircraft-visual">
-        <div class="aircraft-silhouette">✈</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tecnam_P2006T,_Private_JP7271498.jpg?width=800" alt="Tecnam P2006T" />
         <div class="aircraft-model-tag">P2006T</div>
       </div>
       <div class="aircraft-info">
@@ -644,6 +643,33 @@
   </div>
 </section>
 
+<!-- FLEET NOTES -->
+<div style="padding: 50px 5vw;">
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+
+    <div style="background: var(--card); border-left: 3px solid var(--sky); padding: 1.3rem 1.6rem; display: flex; gap: 1rem; align-items: flex-start;">
+      <span style="color: var(--sky); font-size: 1rem; flex-shrink:0; margin-top:2px;">ℹ</span>
+      <div style="font-size: 0.83rem; color: var(--muted); line-height: 1.6;">
+        <strong style="color:var(--white);">Aircraft Availability:</strong> Aircraft are assigned based on your training location and program. Your instructor will confirm the aircraft before your first flight. All aircraft are maintained to FAA Part 91 standards by partner club maintenance teams.
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-left: 3px solid var(--amber); padding: 1.3rem 1.6rem; display: flex; gap: 1rem; align-items: flex-start;">
+      <span style="color: var(--amber); font-size: 1rem; flex-shrink:0; margin-top:2px;">📅</span>
+      <div style="font-size: 0.83rem; color: var(--muted); line-height: 1.6;">
+        <strong style="color:var(--white);">Scheduling:</strong> All flight schedules are booked directly through the respective partner flying club's flight management app. Upon enrollment, you will be onboarded into that club's scheduling system with full access to book flights, view aircraft availability, and manage your training calendar.
+      </div>
+    </div>
+
+    <div style="background: var(--card); border-left: 3px solid var(--green, #7dd4a8); padding: 1.3rem 1.6rem; display: flex; gap: 1rem; align-items: flex-start;">
+      <span style="color: #7dd4a8; font-size: 1rem; flex-shrink:0; margin-top:2px;">🎓</span>
+      <div style="font-size: 0.83rem; color: var(--muted); line-height: 1.6;">
+        <strong style="color:var(--white);">Student Status:</strong> You will be enrolled and recognized as a student of the partner school at your training location. You benefit from their club rates, aircraft access, and ground facilities for the full duration of your program with InsiderPilot.
+      </div>
+    </div>
+
+  </div>
+</div>
 <!-- CTA -->
 <div class="cta-strip">
   <div>
